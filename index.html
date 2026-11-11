@@ -1,0 +1,1981 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<meta name="robots" content="noindex,nofollow" />
+<style>
+  html.gate-locked body > *:not(#aikotobaGate) { display: none !important; }
+  #aikotobaGate { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
+    background: #10161c; color: #e8eef3; padding: 1rem; font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif; }
+  #aikotobaGate .gate-box { width: 100%; max-width: 26rem; background: #1a232c; border: 1px solid #37434f; border-radius: 1rem; padding: 1.5rem; }
+  #aikotobaGate h1 { font-size: 1.15rem; margin: 0 0 .5rem; }
+  #aikotobaGate p { font-size: .9rem; line-height: 1.6; color: #a9bac7; margin: .25rem 0 .9rem; }
+  #aikotobaGate .gate-row { display: flex; gap: .5rem; }
+  #gateInput { flex: 1; min-width: 0; font-size: 1rem; padding: .65rem .75rem; border-radius: .6rem; border: 1px solid #37434f;
+    background: #10161c; color: #e8eef3; -webkit-text-security: disc; }
+  #gateToggle, #gateSubmit { font-size: .95rem; padding: .65rem .9rem; border-radius: .6rem; border: 1px solid #37434f;
+    background: #222e3a; color: #e8eef3; cursor: pointer; }
+  #gateSubmit { background: #00579e; border-color: #00579e; color: #fff; width: 100%; margin-top: .75rem; min-height: 2.75rem; }
+  #gateError { color: #ff9d8a; font-size: .9rem; min-height: 1.4em; margin-top: .6rem; }
+  #aikotobaGate .gate-note { font-size: .78rem; color: #7e8fa0; margin-top: .9rem; }
+</style>
+<script>
+  try {
+    if (sessionStorage.getItem("aikotoba-ok") !== "1") {
+      document.documentElement.classList.add("gate-locked");
+    }
+  } catch (e) {
+    document.documentElement.classList.add("gate-locked");
+  }
+</script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>JR西日本グループ会社一覧表</title>
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.25rem; }
+      * { box-sizing: border-box; }
+      :root{
+        --bg:#f4f6f8; --surface:#ffffff; --surface2:#eef3f7; --ink:#17242f; --ink2:#4a5a66;
+        --line:#d5dde3; --blue:#00579e; --blue-dark:#003a6b; --blue-soft:#e3eef7;
+        --amber:#b97e0a; --amber-bg:#fdf3d7; --amber-line:#e3c56a;
+        --ok:#0d6e4f; --ok-bg:#e2f2ea; --none:#6b7885; --chip:#e8edf1;
+        --shadow:0 1px 3px rgba(10,40,70,.10);
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#10161c; --surface:#1a232c; --surface2:#222e3a; --ink:#e8eef3; --ink2:#a9bac7;
+          --line:#37434f; --blue:#5aa9e6; --blue-dark:#9cccf2; --blue-soft:#1d3247;
+          --amber:#e0aa3e; --amber-bg:#3a2f14; --amber-line:#7a6420;
+          --ok:#4cc79a; --ok-bg:#173a2d; --none:#93a2af; --chip:#27333f;
+          --shadow:0 1px 3px rgba(0,0,0,.4);
+        }
+      }
+      html{ -webkit-text-size-adjust:100%; }
+      body{ margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif;
+        line-height:1.65; font-size:15px; }
+      a{ color:var(--blue); }
+      .wrap{ max-width:1240px; margin:0 auto; padding:0 16px 56px; }
+      header.page{ padding:28px 0 6px; }
+      header.page h1{ font-size:clamp(22px,4.5vw,32px); margin:0 0 8px; letter-spacing:.02em; color:var(--blue-dark); }
+      header.page p.lead{ margin:0; color:var(--ink2); max-width:62em; }
+      .meta-line{ margin-top:10px; font-size:13px; color:var(--ink2); }
+      .meta-line b{ color:var(--ink); }
+
+      /* ---- electrical spotlight ---- */
+      .spot{ margin-top:20px; background:var(--surface); border:2px solid var(--amber-line); border-radius:10px; box-shadow:var(--shadow); overflow:hidden; }
+      .spot-head{ background:var(--amber-bg); padding:14px 18px 10px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:baseline; }
+      .spot-head h2{ margin:0; font-size:19px; color:var(--ink); }
+      .spot-head .bolt{ display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--amber); color:#fff; font-size:15px; margin-right:6px; vertical-align:-6px; }
+      .spot-head p{ margin:0; font-size:13px; color:var(--ink2); flex:1 1 320px; }
+      .spot-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:0; }
+      .spot-card{ padding:14px 18px; border-top:1px solid var(--line); }
+      .spot-card h3{ margin:0 0 2px; font-size:15.5px; }
+      .spot-card h3 a{ text-decoration:none; }
+      .spot-card h3 a:hover{ text-decoration:underline; }
+      .spot-card .sub{ font-size:12.5px; font-weight:700; color:var(--amber); margin:0 0 4px; }
+      .spot-card p{ margin:0; font-size:13.5px; color:var(--ink2); }
+      .spot-foot{ padding:10px 18px 14px; border-top:1px solid var(--line); font-size:13px; color:var(--ink2); }
+
+      /* ---- controls ---- */
+      .controls{ position:sticky; top:0; z-index:20; background:var(--bg); padding:16px 0 10px; }
+      .controls-inner{ background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:12px 14px; }
+      .row1{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+      .search{ flex:1 1 220px; display:flex; }
+      .search input{ flex:1; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); font-size:15px; min-height:2.5rem; }
+      .count{ font-size:13.5px; color:var(--ink2); white-space:nowrap; }
+      .count b{ color:var(--ink); font-size:16px; }
+      .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-top:11px; }
+      .chips .lbl{ font-size:12.5px; font-weight:700; color:var(--ink2); align-self:center; margin-right:2px; }
+      .chip{ border:1px solid var(--line); background:var(--chip); color:var(--ink); border-radius:999px; padding:6px 13px; font-size:13.5px; cursor:pointer; min-height:2.25rem; font-family:inherit; }
+      .chip[aria-pressed="true"]{ background:var(--blue); border-color:var(--blue); color:#fff; font-weight:700; }
+      .chip.elec{ border-color:var(--amber-line); background:var(--amber-bg); font-weight:700; }
+      .chip.elec[aria-pressed="true"]{ background:var(--amber); border-color:var(--amber); color:#fff; }
+      .subchips{ display:none; flex-wrap:wrap; gap:7px; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); }
+      .subchips.on{ display:flex; }
+      .subchip{ border:1px solid var(--amber-line); background:var(--surface); color:var(--ink); border-radius:999px; padding:5px 12px; font-size:13px; cursor:pointer; min-height:2.25rem; font-family:inherit; }
+      .subchip[aria-pressed="true"]{ background:var(--amber); color:#fff; font-weight:700; }
+      .row2{ display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:11px; align-items:center; font-size:13.5px; }
+      .row2 label{ display:inline-flex; align-items:center; gap:7px; cursor:pointer; padding:6px 2px; }
+      .row2 input[type="checkbox"]{ width:19px; height:19px; accent-color:var(--blue); }
+      .row2 select{ padding:6px 8px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); font-size:14px; font-family:inherit; }
+
+      /* ---- table ---- */
+      .tablebox{ background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); overflow:hidden; }
+      table{ width:100%; border-collapse:collapse; }
+      thead th{ background:var(--blue-dark); color:#fff; text-align:left; font-size:13px; padding:10px 12px; position:sticky; top:0; }
+      @media (prefers-color-scheme: dark){ thead th{ background:#12293f; } }
+      tbody td{ padding:11px 12px; border-top:1px solid var(--line); vertical-align:top; font-size:14px; }
+      tbody tr.is-elec{ background:linear-gradient(to right, var(--amber-bg), transparent 55%); }
+      td.c-name{ min-width:170px; }
+      .cname{ font-weight:700; font-size:14.5px; }
+      .cname .parent-badge{ display:inline-block; font-size:11px; background:var(--blue); color:#fff; border-radius:4px; padding:1px 6px; margin-left:6px; vertical-align:2px; }
+      .elec-badge{ display:inline-block; font-size:11px; background:var(--amber); color:#fff; border-radius:4px; padding:1px 6px; margin-left:6px; vertical-align:2px; font-weight:700; }
+      .rel-badge{ display:inline-block; font-size:11px; border:1px solid var(--amber-line); color:var(--amber); border-radius:4px; padding:0 5px; margin-left:6px; vertical-align:2px; font-weight:700; }
+      .cat{ font-size:12.5px; color:var(--ink2); margin-top:2px; }
+      td.c-biz{ min-width:230px; color:var(--ink); }
+      td.c-tags{ min-width:170px; }
+      .tag{ display:inline-block; font-size:12px; border-radius:999px; padding:2px 9px; margin:0 4px 4px 0; background:var(--blue-soft); color:var(--ink); }
+      .tag.e{ background:var(--amber-bg); border:1px solid var(--amber-line); font-weight:700; }
+      .basis{ display:block; font-size:11.5px; color:var(--none); margin-top:2px; }
+      td.c-qual{ min-width:210px; font-size:13.5px; }
+      .qual-must{ display:block; margin-bottom:3px; }
+      .qual-must b{ color:#b03030; }
+      @media (prefers-color-scheme: dark){ .qual-must b{ color:#ff9c9c; } }
+      .qual-rec b{ color:var(--ok); }
+      td.c-hol{ min-width:150px; }
+      .hol-num{ font-size:19px; font-weight:800; }
+      .hol-num small{ font-size:12.5px; font-weight:700; }
+      .hol-note{ display:block; font-size:12px; color:var(--ink2); margin-top:2px; }
+      .hol-src{ display:inline-block; font-size:12px; margin-top:3px; }
+      .hol-none{ color:var(--none); font-weight:700; font-size:13.5px; }
+      td.c-hp{ white-space:nowrap; }
+      .hp-link{ display:inline-block; padding:7px 10px; border:1px solid var(--line); border-radius:8px; text-decoration:none; font-size:12.5px; background:var(--surface2); word-break:break-all; white-space:normal; }
+      .hp-none{ color:var(--none); font-size:12.5px; }
+      .empty{ padding:36px 18px; text-align:center; color:var(--ink2); }
+
+      /* ---- notes ---- */
+      .notes{ margin-top:22px; display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+      .note{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:15px 17px; box-shadow:var(--shadow); }
+      .note h2{ margin:0 0 7px; font-size:15.5px; }
+      .note p,.note li{ font-size:13.5px; color:var(--ink2); }
+      .note p{ margin:0 0 6px; }
+      .note ul{ margin:4px 0 0; padding-left:1.2em; }
+      .sources{ margin-top:14px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:15px 17px; box-shadow:var(--shadow); }
+      .sources h2{ margin:0 0 7px; font-size:15.5px; }
+      .sources li{ font-size:13.5px; color:var(--ink2); margin-bottom:3px; }
+      .sources ul{ margin:4px 0 0; padding-left:1.2em; }
+
+      /* ---- FES (joint seminar) ---- */
+      .fes{ margin-top:20px; background:var(--surface); border:2px solid var(--blue); border-radius:10px; box-shadow:var(--shadow); overflow:hidden; }
+      .fes-head{ background:var(--blue-soft); padding:14px 18px 10px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; }
+      .fes-head h2{ margin:0; font-size:19px; color:var(--ink); flex:1 1 300px; }
+      .deadline-badge{ display:inline-block; background:#b03030; color:#fff; font-weight:800; font-size:13.5px; border-radius:999px; padding:5px 13px; }
+      @media (prefers-color-scheme: dark){ .deadline-badge{ background:#8e2f2f; } }
+      .fes-body{ padding:13px 18px 6px; }
+      .fes-body p{ margin:0 0 8px; font-size:14px; }
+      .fes-facts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:8px 18px; margin:10px 0; }
+      .fes-facts div{ background:var(--surface2); border-radius:8px; padding:9px 12px; font-size:13.5px; }
+      .fes-facts b{ display:block; font-size:12px; color:var(--ink2); margin-bottom:2px; }
+      .fes-links{ display:flex; flex-wrap:wrap; gap:9px; margin:10px 0 12px; }
+      .fes-links a{ display:inline-block; padding:9px 14px; border-radius:8px; text-decoration:none; font-weight:700; font-size:14px; background:var(--blue); color:#fff; }
+      .fes-links a.sub{ background:var(--surface2); color:var(--blue); border:1px solid var(--line); }
+      .fes-companies{ border-top:1px dashed var(--line); padding:10px 18px 14px; font-size:13px; color:var(--ink2); }
+      .fes-companies b{ color:var(--ink); display:block; margin-bottom:5px; font-size:13.5px; }
+      .fes-companies span{ display:inline-block; background:var(--chip); border-radius:999px; padding:2px 9px; margin:0 4px 5px 0; font-size:12.5px; color:var(--ink); }
+      .fes-companies span.e{ background:var(--amber-bg); border:1px solid var(--amber-line); font-weight:700; }
+
+      /* ---- briefing cell ---- */
+      td.c-ev{ min-width:180px; font-size:13.5px; }
+      .fes-badge{ display:inline-block; font-size:11.5px; background:var(--blue); color:#fff; border-radius:4px; padding:2px 7px; font-weight:700; margin-bottom:4px; }
+      .ev-text{ display:block; }
+      .ev-link{ display:inline-block; font-size:12.5px; margin-top:3px; }
+      .ev-none{ color:var(--none); font-weight:700; font-size:13px; }
+      .ev-note{ display:block; font-size:12px; color:var(--ink2); margin-top:2px; }
+
+      /* ---- qualification guide ---- */
+      .qguide{ margin-top:22px; background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:16px 18px; }
+      .qguide h2{ margin:0 0 6px; font-size:18px; }
+      .qguide > p{ font-size:13.5px; color:var(--ink2); margin:0 0 10px; }
+      .qguide h3.qg-cat{ margin:16px 0 6px; font-size:15px; color:var(--blue-dark); }
+      details.q{ border:1px solid var(--line); border-radius:8px; margin-bottom:8px; background:var(--surface); }
+      details.q summary{ cursor:pointer; padding:10px 13px; font-weight:700; font-size:14.5px; list-style-position:inside; }
+      details.q summary .st{ font-size:11.5px; border-radius:999px; padding:2px 9px; margin-left:7px; vertical-align:1px; white-space:nowrap; }
+      .st.open{ background:#b03030; color:#fff; }
+      .st.soon{ background:var(--amber); color:#fff; }
+      .st.done{ background:var(--chip); color:var(--ink2); }
+      .st.any{ background:var(--ok-bg); color:var(--ok); }
+      .q-body{ padding:2px 15px 13px; font-size:13.5px; }
+      .q-body dl{ margin:0; display:grid; grid-template-columns:110px 1fr; gap:4px 12px; }
+      .q-body dt{ font-weight:700; color:var(--ink2); font-size:12.5px; padding-top:2px; }
+      .q-body dd{ margin:0; }
+      @media (max-width:560px){ .q-body dl{ grid-template-columns:1fr; gap:0; } .q-body dd{ margin-bottom:7px; } }
+      .q-sched{ background:var(--surface2); border-radius:8px; padding:9px 12px; margin-top:9px; }
+      .q-sched b{ font-size:12.5px; color:var(--ink2); display:block; margin-bottom:3px; }
+      .q-sched p{ margin:0 0 4px; }
+
+      /* ---- recommender ---- */
+      .reco{ margin-top:20px; background:var(--surface); border:2px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:15px 18px 17px; }
+      .reco h2{ margin:0 0 4px; font-size:19px; }
+      .reco > p{ margin:0 0 6px; font-size:13.5px; color:var(--ink2); }
+      .reco-group{ margin-top:12px; }
+      .reco-group > b{ display:block; font-size:13.5px; margin-bottom:6px; }
+      .reco-group .chips{ margin-top:0; }
+      .reco textarea{ width:100%; margin-top:6px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); font-size:14.5px; font-family:inherit; min-height:4.2em; }
+      .reco .privacy{ font-size:12px; color:var(--ink2); margin-top:3px; }
+      .reco-actions{ margin-top:13px; display:flex; flex-wrap:wrap; gap:9px; align-items:center; }
+      .reco-btn{ background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:8px; padding:9px 18px; font-size:14.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+      .reco-clear{ background:var(--surface2); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:9px 14px; font-size:13.5px; cursor:pointer; font-family:inherit; }
+      .reco-results{ margin-top:14px; display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:10px; }
+      .reco-card{ border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--surface2); }
+      .reco-card h3{ margin:0 0 2px; font-size:15px; }
+      .reco-card h3 a{ text-decoration:none; }
+      .reco-card .rcat{ font-size:12.5px; color:var(--ink2); margin:0 0 6px; }
+      .reco-card .matchn{ display:inline-block; font-size:11.5px; background:var(--blue); color:#fff; border-radius:999px; padding:1px 9px; font-weight:700; margin-left:6px; vertical-align:1px; }
+      .reco-card ul{ margin:4px 0 8px; padding-left:1.25em; font-size:13px; }
+      .reco-card li{ margin-bottom:2px; }
+      .reco-msg{ margin-top:12px; font-size:14px; color:var(--ink2); background:var(--surface2); border-radius:8px; padding:11px 14px; }
+      .reco-disclaimer{ margin-top:11px; font-size:12px; color:var(--ink2); }
+
+
+      /* ---- company thumbnails (external references to each official site) ---- */
+      .thumb{ display:block; position:relative; border-radius:6px; overflow:hidden; margin-bottom:7px; background:var(--surface2); text-decoration:none; }
+      .thumb img{ display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; }
+      .thumb img.imgerr{ display:none; }
+      .thumb-fallback{ display:none; }
+      .thumb img.imgerr ~ .thumb-fallback{ display:flex; }
+      .thumb-none, .thumb-fallback{ flex-direction:column; align-items:center; justify-content:center; gap:2px; aspect-ratio:16/9; padding:8px; text-align:center; border:1px dashed var(--line); border-radius:6px; }
+      .thumb-none{ display:flex; }
+      .tf-cat{ font-size:12.5px; font-weight:700; color:var(--ink2); }
+      .tf-note{ font-size:11px; color:var(--none); }
+      .thumb-cap{ position:absolute; left:6px; bottom:6px; background:rgba(10,25,40,.72); color:#fff; font-size:11px; font-weight:700; border-radius:4px; padding:1px 7px; }
+      .spot-card .thumb{ margin:-2px 0 9px; }
+      .reco-card .thumb{ margin:0 0 9px; }
+      .img-src-list li{ margin-bottom:5px; word-break:break-all; }
+
+      /* ---- mobile: table -> cards ---- */
+      @media (max-width:760px){
+        thead{ display:none; }
+        table, tbody, tr, td{ display:block; width:100%; }
+        tbody tr{ border-top:3px solid var(--line); padding:8px 4px 12px; }
+        tbody tr:first-child{ border-top:none; }
+        tbody td{ border-top:none; padding:5px 12px; min-width:0 !important; }
+        td.c-tags::before{ content:"職種タグ"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
+        td.c-qual::before{ content:"資格（必須／あると有利）"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
+        td.c-ev::before{ content:"説明会・セミナー"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
+        td.c-hol::before{ content:"年間休日（公式確認分のみ）"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
+        td.c-hp::before{ content:"ホームページ"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
+        .controls{ position:static; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="page">
+        <h1>JR西日本グループ会社一覧表</h1>
+        <p class="lead">JR西日本（西日本旅客鉄道）の公式「グループ会社一覧」に掲載されたグループ会社<strong>68社</strong>とJR西日本本体を、分野・事業内容・関係する職種・資格・年間休日・ホームページで整理した一覧です。<strong>電気関係を主役</strong>に、ページ上部で電気系会社を細分して紹介し、一覧は初期状態で「電気」フィルタが選択され電気関係の会社が表示されます（「すべて表示」で全社一覧に切り替えられます）。</p>
+        <p class="meta-line">掲載範囲：JR西日本公式グループ会社一覧（2026年11月11日確認）／ 年間休日は<strong>公式情報で確認できた会社のみ</strong>日数を記載し、それ以外は「公開情報なし」としています。説明会・セミナー情報と、資格の詳細・試験日程（ページ下部の「資格ガイド」）も公式情報で確認できた範囲で掲載しています。詳しくはページ下部の「読み方の注意」をご覧ください。各社の行には、公式ホームページのトップ画像のサムネイル（各社サイトへの外部参照・遅延読み込み）も表示しています。</p>
+      </header>
+
+      <section class="fes" aria-labelledby="fes-h">
+        <div class="fes-head">
+          <h2 id="fes-h">合同企業説明会：JR西日本グループ合同セミナー「WEST JAPAN RAILWAY FES AUTUMN」</h2>
+          <span class="deadline-badge">申込締切間近：11月20日(金) 15:00（11月11日時点で残り9日）</span>
+        </div>
+        <div class="fes-body">
+          <p>JR西日本グループ<strong>24社が一堂に集まる最大級の対面イベント</strong>です。鉄道から街づくりまで、グループの多彩な事業領域を1日で体感でき、各ブースでの質問・個別相談や社員によるクロストークが予定されています。冬のインターンシップに向けた企業研究の場としても案内されています（出典：JR西日本公式採用サイト「セミナー情報」・公式特設ページ、いずれも2026年11月11日確認）。</p>
+          <div class="fes-facts">
+            <div><b>開催日時</b>2026年11月22日(日) 10:00～17:30</div>
+            <div><b>会場（対面・大阪）</b>コングレコンベンションセンター（グランフロント大阪 北館B2F、JR大阪駅直結・駅から約5分）</div>
+            <div><b>申込方法</b>JR西日本マイページ内の予約フォーム、または公式特設ページから予約（特設ページではLINE友だち登録からの予約手順も案内されています）</div>
+            <div><b>申込締切</b>2026年11月20日(金) 15:00</div>
+            <div><b>来場特典</b>3社以上のブース訪問で、最大2,000ptが当たるガチャガチャチャンス（WESTERポイント）に参加可能（特設ページより）</div>
+            <div><b>電気関係の参加会社</b>JR西日本本体、JR西日本電気システム、JR西日本電気テック、T-SoLinx、JR西日本テクシア など（下の参加企業一覧で⚡付き）</div>
+          </div>
+          <div class="fes-links">
+            <a href="https://idc.career-tasu.jp/jrwestfes/autumn/" target="_blank" rel="noopener">公式特設ページ（予約・参加企業一覧）</a>
+            <a class="sub" href="https://www.westjr.co.jp/company/recruit/fresh/seminar/" target="_blank" rel="noopener">JR西日本公式「セミナー情報」ページ</a>
+          </div>
+          <p style="font-size:12.5px;color:var(--ink2)">※この表の各行にも、参加会社には「合同セミナー参加（11/22）」の表示を付けています。開催内容は変更される場合があるため、申込前に必ず公式ページで最新情報をご確認ください。</p>
+        </div>
+        <div class="fes-companies">
+          <b>参加企業一覧（24社・公式特設ページより）</b>
+          <span class="e">⚡西日本旅客鉄道（JR西日本）</span><span>ジェイアール西日本デイリーサービスネット</span><span>ジェイアール西日本フードサービスネット</span><span>JR西日本SC開発</span><span>JR西日本アーバン開発</span><span>JR西日本メンテック</span><span>JR西日本金沢メンテック</span><span>JR西日本中国メンテック</span><span>JR西日本テクノス</span><span>JR西日本レールテック</span><span>大鉄工業</span><span>広成建設</span><span class="e">⚡JR西日本テクシア</span><span class="e">⚡JR西日本電気システム</span><span class="e">⚡JR西日本電気テック</span><span class="e">⚡T-SoLinx</span><span>JR西日本カスタマーリレーションズ</span><span>ジェイアール西日本マルニックス</span><span>JR西日本コミュニケーションズ</span><span>ジェイアール西日本総合ビルサービス</span><span>西日本ジェイアールバス</span><span>ジェイアール西日本ウェルネット</span><span>JR西日本あいウィル</span><span>ジェイアール西日本コンサルタンツ</span>
+        </div>
+      </section>
+
+      <section class="spot" aria-labelledby="spot-h">
+        <div class="spot-head">
+          <h2 id="spot-h"><span class="bolt" aria-hidden="true">⚡</span>電気関係ピックアップ</h2>
+          <p>鉄道電気を中核とする会社を、分野別（電車線／変電／信号／通信・光ネットワーク／電気計器・製造／電力・エネルギー）に分けて紹介します。各社の事業内容は公式情報で確認した範囲で記載しています。</p>
+        </div>
+        <div class="spot-grid" id="spotGrid"></div>
+        <div class="spot-foot">このほか、JR西日本本体にも電気システム職があり、建築・ビル設備・エネルギー供給などの会社にも電気関連の業務があります。下の一覧で「電気」フィルタを選ぶと、電気が中核の会社（⚡）と電気関連業務のある会社をまとめて表示します。</div>
+      </section>
+
+      <section class="reco" aria-labelledby="reco-h">
+        <h2 id="reco-h">希望からおすすめ企業を探す</h2>
+        <p>ざっくりした希望を選ぶか、下の欄に自由に書くだけで、この一覧に掲載している公開データ（事業内容・職種タグ・資格・年間休日・説明会情報）との合致度から、おすすめの会社を上位5社まで表示します。選択だけでも、自由記入だけでも使えます。</p>
+        <div class="reco-group">
+          <b>1. やりたい仕事・職種（複数選択可）</b>
+          <div class="chips" id="recoJobs" role="group" aria-label="希望する職種"></div>
+        </div>
+        <div class="reco-group">
+          <b>2. 持っている資格・取りたい資格（複数選択可）</b>
+          <div class="chips" id="recoQuals" role="group" aria-label="資格で探す"></div>
+        </div>
+        <div class="reco-group">
+          <b>3. 優先したいこと（複数選択可）</b>
+          <div class="chips" id="recoPri" role="group" aria-label="優先したいこと"></div>
+        </div>
+        <div class="reco-group">
+          <b>4. 自由記入（任意）</b>
+          <textarea id="recoFree" placeholder="例：電気工事がしたい／信号関係に興味がある／休みが多いところがいい／ホテルで働きたい" aria-label="自由記入の希望"></textarea>
+          <p class="privacy">自由記入の内容は、お使いのブラウザの中だけでキーワード照合に使い、保存・送信はしません。</p>
+        </div>
+        <div class="reco-actions">
+          <button type="button" class="reco-btn" id="recoBtn">おすすめを表示</button>
+          <button type="button" class="reco-clear" id="recoClear">条件をクリア</button>
+        </div>
+        <div id="recoOut" aria-live="polite"></div>
+        <p class="reco-disclaimer">※おすすめは、このスペースに掲載した公開データに基づく目安であり、採用の合否や入社を保証するものではありません。給与額・勤務地の詳細など、掲載データにない条件では順位付けしていません。実際の募集状況は各社の公式採用ページでご確認ください。</p>
+      </section>
+
+      <div class="controls" role="region" aria-label="絞り込み">
+        <div class="controls-inner">
+          <div class="row1">
+            <div class="search"><input type="search" id="q" placeholder="会社名・事業内容・資格などで検索（例：信号、宅建、ホテル）" aria-label="キーワード検索" /></div>
+            <div class="count" id="count" aria-live="polite"></div>
+          </div>
+          <div class="chips" id="jobChips" role="group" aria-label="職種で絞り込み">
+            <span class="lbl">職種で絞る：</span>
+          </div>
+          <div class="subchips" id="elecChips" role="group" aria-label="電気の細分で絞り込み">
+            <span class="lbl" style="font-size:12.5px;font-weight:700;color:var(--ink2);align-self:center;">電気の細分：</span>
+          </div>
+          <div class="row2">
+            <label><input type="checkbox" id="evOnly" /> 説明会・セミナー情報がある会社のみ</label>
+            <label><input type="checkbox" id="holOnly" /> 年間休日が公式確認できた会社のみ</label>
+            <label><input type="checkbox" id="hpOnly" /> 会社ホームページがある会社のみ</label>
+            <label>分野：
+              <select id="catSel" aria-label="分野で絞り込み"><option value="">すべての分野</option></select>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablebox">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">会社名</th>
+              <th scope="col">どのような会社か（事業内容）</th>
+              <th scope="col">関係する職業・職種</th>
+              <th scope="col">資格（必須／あると有利）</th>
+              <th scope="col">説明会・セミナー</th>
+              <th scope="col">年間休日</th>
+              <th scope="col">ホームページ</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty" hidden>条件に合う会社がありません。フィルタを変えてお試しください。</div>
+      </div>
+
+      <div class="notes">
+        <section class="note">
+          <h2>年間休日の読み方（重要）</h2>
+          <p>日数を記載しているのは、その会社の<strong>公式ホームページ・公式採用ページ</strong>（JR西日本本体は公式募集要項）で年間休日の総日数を確認できた会社だけです。各行に出典リンクを付けています。</p>
+          <p>「<strong>公開情報なし</strong>」は、公式サイト・公式採用ページに年間休日の総日数が明記されているのを確認できなかった会社です。就職情報サイトや求人媒体に数字が出ている会社もありますが、公式情報ではないため、この表では採用していません。</p>
+          <p>ホテル・店舗・現業系などはシフト制で、職種・勤務地・雇用形態によって休日数が異なる場合があります。記載がある会社も、注記と出典をあわせてご確認ください。実際の条件は応募時点の公式募集要項が正本です。</p>
+        </section>
+        <section class="note">
+          <h2>職種タグの付け方</h2>
+          <p>タグは「その会社の事業に関係する職業・職種」の目安です。1社に複数付いています。</p>
+          <ul>
+            <li><strong>採用情報で確認</strong>：公式採用情報・公式グループ採用情報に職種・部門の記載があり、それに基づくタグです。</li>
+            <li><strong>事業内容からの分類</strong>：公式の事業内容から妥当な範囲で分類したタグです。その職種を現在募集中という意味ではありません。</li>
+          </ul>
+          <p>電気の細分（電車線／変電／信号／通信・光ネットワーク／電気計器・製造／電力・電気設備／電気工事・施工）は、各社の公式事業説明（例：電気システム＝電車線・電灯電力・変電・信号・通信の5系統、電気テック＝電力部門・信号通信部門）に基づいて付けています。</p>
+        </section>
+        <section class="note">
+          <h2>資格欄の読み方</h2>
+          <p><strong>「必須」</strong>は、法令上その業務に就くために必要な免許など、公式要項等で確認できる範囲だけを書いています。多くの会社・職種では、<strong>入社時点で特定の資格が必須ではない場合が多く</strong>、必須欄が「—」の会社はその旨を示します（応募資格の詳細は各社の公式募集要項でご確認ください）。</p>
+          <p><strong>「あると有利・役立つ」</strong>は、業務内容に直結する一般的なおすすめ資格で、必須条件ではありません。全社一律ではなく、分野ごとに選んでいます。入社後の取得支援制度の有無は会社・職種により異なるため、この表では断定せず、各社の公式採用ページでご確認ください。</p>
+        </section>
+        <section class="note">
+          <h2>説明会・セミナー欄の読み方</h2>
+          <p>「説明会・セミナー」欄には、①合同セミナー「WEST JAPAN RAILWAY FES AUTUMN」（2026年11月22日・大阪対面）の<strong>参加会社24社</strong>に付けた「合同セミナー参加」表示と、②各社の公式採用フロー・公式に案内されたセミナー情報で<strong>個別説明会の実施を確認できた会社</strong>の案内だけを載せています（2026年11月11日確認）。</p>
+          <p>個別説明会の<strong>日程は随時更新される</strong>ため、この表では特定の日付を今後の予定としては載せず、各行のリンク先（申込ページ）で最新日程を確認する形にしています。すでに終了した日程がある場合はその旨を書いています。</p>
+          <p>「<strong>説明会の公開情報なし</strong>」は、今回の確認で公式の案内を見つけられなかった会社です。説明会を実施していないという意味ではないため、志望する会社は公式採用ページや就職情報サイトの同社ページもあわせてご確認ください。</p>
+        </section>
+      </div>
+
+      <section class="qguide" aria-labelledby="qg-h">
+        <h2 id="qg-h">資格ガイド（詳細と試験日程）</h2>
+        <p>表に載せた資格について、資格名を押すと詳細（できること・受験資格・試験形式・難易度の目安・役立つ会社）と、試験実施団体の公式発表に基づく試験日程が開きます。日程は<strong>2026年11月11日確認</strong>時点のものです。年度の表記（令和8年度など）と「終了／受付中／今後」の区別を付けてあります。次年度の日程が公式未発表の資格は、推測で日付を作らず「未発表（例年の時期）」と明記しています。申込前に必ず各公式案内で最新情報をご確認ください。</p>
+
+        <h3 class="qg-cat">電気関係の資格（メイン）</h3>
+
+        <details class="q">
+          <summary>第二種電気工事士<span class="st soon">技能試験は12月12日・13日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>一般用電気工作物等（住宅・小規模店舗などの電気設備）の電気工事に従事できます。電気工事は有資格者の独占業務で、無資格では行えません。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。試験合格で免状が交付され、<strong>免状交付に実務経験は不要</strong>です。</dd>
+              <dt>試験形式</dt><dd>学科試験（四肢択一・50問、CBT方式または筆記方式）＋技能試験（公表される候補問題13問のうち1問を制限時間40分で施工）。年2回（上期・下期）。</dd>
+              <dt>難易度の目安</dt><dd>電気系国家資格の入門レベル。学科・技能とも対策しやすい構成ですが、技能は欠陥があると不合格になるため練習が重要です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本電気システム、JR西日本電気テック、NESCO各社、ジェイアール西日本ビルトなど、電気工事・保全に関わるほぼ全ての電気系会社で基礎資格として役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社時点で必須と公式確認できた会社はありませんが、電気工事の現場業務に就くには事実上必要な資格です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 電気技術者試験センター）</b>
+              <p>令和8年度下期：申込 2026年8月17日〜9月3日（<strong>終了</strong>）／ 学科CBT 9月24日〜11月8日（終了）／ 学科筆記 10月25日（終了）／ <strong>技能試験 12月12日(土)または13日(日)（これから）</strong></p>
+              <p>次回・令和9年度上期：申込 2027年3月15日(月)〜4月5日(月) ／ 学科CBT 4月20日(火)〜6月4日(金) ／ 技能 7月17日(土)または18日(日)。※令和9年度から学科試験はCBT方式のみで実施されます（公式案内）。</p>
+              <p><a href="https://www.shiken.or.jp/construction/second/" target="_blank" rel="noopener">公式・第二種電気工事士試験ページ</a>／<a href="https://www.shiken.or.jp/construction/upload/R09denkounittei.pdf" target="_blank" rel="noopener">公式・令和9年度実施日程のご案内（PDF）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>第一種電気工事士<span class="st soon">技能試験は11月21日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>第二種の範囲に加え、自家用電気工作物（最大電力500kW未満の事業所・ビル・工場など）の電気工事にも従事できます。独占業務です。</dd>
+              <dt>受験資格</dt><dd>試験自体は<strong>誰でも受験可</strong>。ただし<strong>免状の交付には電気工事の実務経験3年以上が必要</strong>で、試験に合格しただけでは免状は交付されません（ここが第二種との大きな違いです）。</dd>
+              <dt>試験形式</dt><dd>学科試験（四肢択一・50問、CBT方式または筆記方式）＋技能試験（候補問題10問のうち1問、制限時間60分）。年2回。</dd>
+              <dt>難易度の目安</dt><dd>第二種より範囲が広く（高圧受電設備など）、中〜上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本電気システム、JR西日本電気テック、NESCO変電システムなど、受変電設備を含む工事・保全の現場で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、自家用電気工作物の工事に従事する業務では必要になる資格です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（電気技術者試験センター）</b>
+              <p>令和8年度下期：申込 2026年7月27日〜8月13日（<strong>終了</strong>）／ 学科CBT 9月11日〜10月18日（終了）／ 学科筆記 10月4日（終了）／ <strong>技能試験 11月21日(土)（これから）</strong></p>
+              <p>次回・令和9年度上期：申込 2027年2月12日(金)〜3月1日(月) ／ 学科CBT 4月1日(木)〜5月8日(土) ／ 技能 7月3日(土)。※令和9年度から学科はCBT方式のみ。</p>
+              <p><a href="https://www.shiken.or.jp/construction/first/" target="_blank" rel="noopener">公式・第一種電気工事士試験ページ</a>／<a href="https://www.shiken.or.jp/construction/upload/R09denkounittei.pdf" target="_blank" rel="noopener">公式・令和9年度実施日程のご案内（PDF）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>第三種電気主任技術者（電験三種）<span class="st open">申込受付中・11月26日17時締切</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>事業用電気工作物（電圧5万ボルト未満）の保安監督を行う「電気主任技術者」として選任されるための国家資格です。変電所や鉄道の受変電設備などの保安の中核資格で、選任には有資格者が必要な独占的資格です。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。合格すれば実務経験なしで免状が交付されます。</dd>
+              <dt>試験形式</dt><dd>理論・電力・機械・法規の4科目（一次試験）。CBT方式または筆記方式。科目別合格の制度があり、合格した科目は後の試験で免除されます。</dd>
+              <dt>難易度の目安</dt><dd>電気系資格の中でも難関として知られます。4科目とも計算問題が中心で、計画的な長期学習が必要です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>NESCO変電システム（変電所設備）、大阪エネルギーサービス（プラントの電気保安）、ジェイアール西日本総合ビルサービス（ビル設備管理）、JR西日本電気システム／電気テックなどで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、変電・受変電設備の保安監督業務では選任資格として必要になります（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（電気技術者試験センター）</b>
+              <p><strong>令和8年度下期：申込受付中です。2026年11月9日(月)10:00〜11月26日(木)17:00（締切厳守。11月11日時点で残り15日）</strong>／ CBT会場予約 12月7日(月)〜2027年1月7日(木) ／ 一次試験CBT 2027年2月4日(木)〜2月28日(日) ／ 一次試験筆記 2027年3月21日(日)。受験手数料はインターネット申込7,700円。</p>
+              <p><a href="https://www.shiken.or.jp/chief/third//" target="_blank" rel="noopener">公式・第三種電気主任技術者試験ページ</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>1級電気工事施工管理技士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>電気工事の施工管理（工程・品質・安全・原価の管理）を行う技術検定の最上級。大規模工事で監理技術者・主任技術者として選任されるための資格です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は学歴等に応じた実務経験（指定学科の卒業で短縮あり）、第二次検定は第一次合格＋実務経験が必要です。<strong>受験にも実務経験が前提</strong>になる点が電気工事士試験との違いです。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一＋応用能力問題）＋第二次検定（施工管理の記述式）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>実務経験者向けの上級レベル。現場経験を前提とした出題です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本電気システム（施工管理）、ジェイアール西日本ビルト、大鉄工業など工事の施工管理職で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、施工管理職として工事を任される段階で必要性が高まる資格です。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 建設業振興基金）</b>
+              <p>令和8年度：第一次検定 申込 2026年2月13日〜2月27日・試験 7月12日（<strong>いずれも終了</strong>）／ 第二次検定 試験 10月18日（終了）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は2月頃、第一次検定は7月頃、第二次検定は10月頃）。</p>
+              <p><a href="https://www.fcip-shiken.jp/den1/index.html" target="_blank" rel="noopener">公式・1級電気工事施工管理技術検定のご案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>2級電気工事施工管理技士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>電気工事の主任技術者として、比較的小規模な工事の施工管理を行うための技術検定です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は年齢要件（受検年度末で17歳以上）が中心で、学生でも挑戦しやすい制度です。第二次検定と資格の取得には実務経験が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一）＋第二次検定（記述式）。第一次検定は前期・後期の年2回実施があります。</dd>
+              <dt>難易度の目安</dt><dd>中級レベル。第一次は学力中心、第二次は実務寄りです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本電気システム、NESCO各社、ジェイアール西日本ビルトなどの施工管理業務で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（建設業振興基金）</b>
+              <p>令和8年度：前期 第一次検定 試験 2026年6月14日（<strong>終了</strong>）／ 後期 申込（ネット）6月29日〜7月27日・試験 11月8日（いずれも終了）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：前期は申込2月頃・試験6月頃、後期は申込6〜7月頃・試験11月頃）。</p>
+              <p><a href="https://www.fcip-shiken.jp/den2/index.html" target="_blank" rel="noopener">公式・2級電気工事施工管理技術検定のご案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>工事担任者（総合通信）<span class="st soon">定期試験は11月22日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>電話・インターネット回線などの端末設備を電気通信回線に接続する工事の実施・監督を行う国家資格（電気通信設備工事担任者）。総合通信はアナログ・デジタル全ての種別をカバーする最上位区分で、接続工事は有資格者等が行う独占業務の側面があります。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。</dd>
+              <dt>試験形式</dt><dd>3科目（電気通信技術の基礎／端末設備の接続のための技術及び理論／端末設備の接続に関する法規）。総合通信・第一級は年2回の定期試験（筆記）、第二級アナログ通信・第二級デジタル通信はCBT方式で通年実施です。</dd>
+              <dt>難易度の目安</dt><dd>中級レベル（総合通信は科目範囲が広く、第二級より難しめ）。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本光ネットワーク（通信回線サービス）、JR西日本電気システム／電気テックの通信部門などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 日本データ通信協会）</b>
+              <p>令和8年度 第2回定期試験：申込 2026年8月1日〜8月21日（<strong>終了</strong>）／ <strong>試験日 11月22日(日)（これから）</strong>。※合同セミナーと同じ日です。</p>
+              <p>CBT方式（第二級アナログ通信・第二級デジタル通信）：2026年4月1日〜2027年3月31日の通年実施（年末年始を除く）。申請後、確認票の発行日から90日以内に受験します。</p>
+              <p><a href="https://www.soumu.go.jp/main_content/001042589.pdf" target="_blank" rel="noopener">公式・令和8年度工事担任者定期試験の公示（総務省サイト掲載PDF）</a>／<a href="https://www.dekyo.or.jp/shiken/news/" target="_blank" rel="noopener">日本データ通信協会・お知らせ</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>電気通信主任技術者<span class="st soon">次回試験は2027年1月31日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>電気通信事業者が設置する伝送交換設備・線路設備の維持管理を監督するための国家資格。事業用電気通信設備の主任技術者として選任される資格です（伝送交換主任技術者・線路主任技術者の区分があります）。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。</dd>
+              <dt>試験形式</dt><dd>3科目（法規／電気通信システム／伝送交換設備及び設備管理 または 線路設備及び設備管理）。マークシート方式、年2回。</dd>
+              <dt>難易度の目安</dt><dd>上級レベル。通信工学の専門知識が広く問われます。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本光ネットワーク（電気通信事業者としての設備管理）などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本データ通信協会）</b>
+              <p>令和8年度 第2回：申込 2026年10月1日〜10月21日（<strong>終了</strong>）／ <strong>試験日 2027年1月31日(日)</strong> ／ 合格発表 2027年2月22日(月)。</p>
+              <p><a href="https://www.dekyo.or.jp/shiken/chief/guide/301" target="_blank" rel="noopener">公式・電気通信主任技術者 試験概要</a>／<a href="https://www.soumu.go.jp/main_content/001053898.pdf" target="_blank" rel="noopener">公式・令和8年度電気通信主任技術者試験の公示（PDF）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>第一級陸上特殊無線技士（一陸特）<span class="st soon">2月期の申込は12月1日〜</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>陸上に設置される無線設備（固定局・基地局・多重無線設備など）の技術操作を行うための無線従事者免許です。鉄道の列車無線・沿線通信設備などの分野で活きます。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。なお第二級・三級陸上特殊無線技士はCBT方式で随時受験できる制度があります（詳細は日本無線協会の案内でご確認ください）。</dd>
+              <dt>試験形式</dt><dd>無線工学24問・法規12問（多肢選択、両科目合計3時間）。年3回（6月・10月・2月期）、全国11地区。</dd>
+              <dt>難易度の目安</dt><dd>中級レベル。無線工学の計算・回路の理解が必要です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本電気テック（通信設備の保全）、NESCO信号工事、JR西日本本体の情報通信分野などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（公益財団法人 日本無線協会）</b>
+              <p>令和8年度 10月期：申込 8月1日〜8月20日・試験 10月16日（<strong>いずれも終了</strong>）。</p>
+              <p>次回・2月期：<strong>申込 12月1日(火)〜12月20日(日)（これから）</strong>／ 試験 2027年2月10日(水)。</p>
+              <p><a href="https://www.nichimu.or.jp/kshiken/" target="_blank" rel="noopener">公式・日本無線協会 国家試験受験案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>普通自動車免許<span class="st any">統一の受験日なし</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>普通自動車の運転免許。電気系の現場会社では、現場への移動や資材運搬のために業務上必要になる場面が多く、募集要項で保有が前提・歓迎とされることがあります。</dd>
+              <dt>受験資格</dt><dd>18歳以上。指定自動車教習所を卒業して運転免許試験場で学科試験を受ける方法などが一般的です。</dd>
+              <dt>試験形式</dt><dd>教習所での技能・学科教習＋卒業検定、免許センターでの学科試験（地域により運用が異なります）。</dd>
+              <dt>難易度の目安</dt><dd>国家試験型の資格とは性質が異なり、教習を修了することが中心です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>NESCO各社・JR西日本電気テックなど現場移動の多い会社や、営業職・物流職のある会社全般で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>会社・職種により異なり、表では主に「あると有利・役立つ」に掲載しています（職種によっては業務上必須になる場合があります）。</dd>
+            </dl>
+            <div class="q-sched"><b>受験日について</b>
+              <p><strong>統一の受験日はありません</strong>（教習所／運転免許試験場ごとに日程が決まります）。</p>
+            </div>
+          </div>
+        </details>
+
+        <h3 class="qg-cat">その他の主な資格</h3>
+
+        <details class="q">
+          <summary>宅地建物取引士（宅建士）<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>不動産取引における重要事項の説明、重要事項説明書・契約書への記名などは、宅地建物取引士だけが行える独占業務です。不動産会社では事務所ごとに一定割合の設置義務もあります。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。ただし都道府県知事への<strong>登録には、実務経験2年以上、または登録実務講習の修了が必要</strong>で、登録と宅建士証の交付を受けて初めて「宅建士」として独占業務を行えます。</dd>
+              <dt>試験形式</dt><dd>四肢択一・50問・2時間（登録講習修了者は45問）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>中級レベル。法律系の出題比率が高い資格です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本不動産開発、JR西日本プロパティーズ、JR西日本不動産投資顧問、駅ビル・SC運営会社など不動産関係の会社で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 不動産適正取引推進機構）</b>
+              <p>令和8年度：申込 インターネット 2026年7月1日〜7月31日・郵送 7月1日〜7月15日（<strong>いずれも終了</strong>）／ 試験 10月18日(日)（終了）／ 合格発表 11月25日(水)。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は7月頃、試験は10月頃）。</p>
+              <p><a href="https://www.retio.or.jp/exam/schedule/" target="_blank" rel="noopener">公式・宅建試験のスケジュール</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>基本情報技術者<span class="st any">CBTで通年受験可</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>情報処理技術者試験（国家試験）のレベル2区分。ITエンジニアとしての基礎的な知識・技能を証明する資格で、独占業務はありません。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。</dd>
+              <dt>試験形式</dt><dd>CBT方式。科目A（多肢選択60問・90分）＋科目B（多肢選択20問・100分、アルゴリズムと情報セキュリティ中心）。</dd>
+              <dt>難易度の目安</dt><dd>中級レベル。科目Bの擬似言語・アルゴリズム対策が鍵です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本ITソリューションズ、TRAILBLAZER、T-SoLinx（表示システム等のソフト開発）、JR西日本光ネットワークなどで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（IPA 情報処理推進機構）</b>
+              <p>CBT方式で<strong>年間を通じて随時実施</strong>。申込時に試験日時・会場を自分で選びます。※システムリプレースのため2026年12月28日から一時休止し、2027年1月下旬に再開予定と案内されています（IPA）。</p>
+              <p><a href="https://www.ipa.go.jp/shiken/kubun/fe.html" target="_blank" rel="noopener">公式・基本情報技術者試験（IPA）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>日商簿記検定（2級を中心に）<span class="st soon">統一試験は11月15日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>日本商工会議所の検定試験。企業の経理・財務の基礎から実務レベルまでの知識を証明します。独占業務はありませんが、事務・経理系職種の適性の目安として広く使われます。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。</dd>
+              <dt>試験形式</dt><dd>統一試験（ペーパー、年3回）と、2・3級のネット試験（CBT、随時）があります。2級は商業簿記＋工業簿記で制限時間90分。</dd>
+              <dt>難易度の目安</dt><dd>3級は入門、2級は中級（工業簿記が加わり実務レベル）、1級は上級です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本商事、JR西日本フィナンシャルマネジメント、JR西日本不動産投資顧問など、経理・財務・事務系の会社で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本商工会議所・各地商工会議所）</b>
+              <p>統一試験 第174回（1〜3級）：<strong>試験日 2026年11月15日(日)（間近）</strong>。申込受付は終了しています（期間は施行する商工会議所により異なります）。</p>
+              <p>次回 第175回（2・3級）：試験日 2027年2月28日(日)、申込は2027年1月頃（会議所により異なる）。2・3級はネット試験（CBT）でも随時受験できます。</p>
+              <p><a href="https://www.kentei.ne.jp/calendar_2026" target="_blank" rel="noopener">公式・2026年度試験日程カレンダー（商工会議所の検定試験）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>調理師<span class="st done">都道府県ごとに実施</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>都道府県知事の免許。「調理師」と名乗るには免許が必要です（名称独占）。調理の仕事自体は無免許でも行えますが、給食施設などでは調理師の配置が求められる場面があります。</dd>
+              <dt>受験資格</dt><dd>高等学校入学資格を有し、<strong>給食施設・飲食店等で2年以上の調理実務経験</strong>があること（指定の調理師養成施設を卒業した場合は実務経験なしで受験できます）。</dd>
+              <dt>試験形式</dt><dd>筆記試験（食文化概論・公衆衛生学・栄養学・食品学・食品衛生学・調理理論など）。都道府県ごとに実施されます。</dd>
+              <dt>難易度の目安</dt><dd>試験自体は基礎レベルですが、受験資格の実務経験2年がハードルになります。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本ホテルズ（調理職）、ジェイアール西日本フードサービスネットなどの調理職で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>調理職では必須に近い位置づけの場合がありますが、会社・職種で異なるため表では「あると有利・役立つ」に掲載しています。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程</b>
+              <p><strong>統一の試験日はなく、都道府県ごとに年1回程度実施</strong>されます。令和8年度は各県で7月〜11月にかけて実施され、多くは終了しました。次年度の日程・申込は、受験する都道府県の公式案内でご確認ください。</p>
+              <p><a href="https://www.pref.shizuoka.jp/kenkofukushi/eiseiyakuji/shokuanzen/shokushiken/1024968.html" target="_blank" rel="noopener">一例：静岡県・調理師試験の案内（公式）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>大型自動車第二種免許（大型二種）<span class="st any">統一の受験日なし</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>バスなどの旅客自動車を「営業として」運転するために必要な運転免許です。バス運転士として乗務するには必須の免許（独占）です。</dd>
+              <dt>受験資格</dt><dd>原則として21歳以上で、普通免許等を通算3年以上保有していること（取得には教習所での教習等が必要です。要件には特例・経過措置があるため、詳細は公式案内でご確認ください）。</dd>
+              <dt>試験形式</dt><dd>指定教習所での技能・学科教習と卒業検定、適性検査などが中心です。</dd>
+              <dt>難易度の目安</dt><dd>大型車両の運転技能が求められる上位免許です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>西日本ジェイアールバス、JRバス中国の運転士職で必須です。</dd>
+              <dt>必須／有利</dt><dd><strong>バス運転士として乗務するには必須</strong>です（表でも「必須」に掲載）。取得支援制度の有無は各社の募集要項でご確認ください。</dd>
+            </dl>
+            <div class="q-sched"><b>受験日について</b>
+              <p><strong>統一の受験日はありません</strong>（教習所／運転免許試験場ごとに日程が決まります）。</p>
+            </div>
+          </div>
+        </details>
+
+        <h3 class="qg-cat">建設・土木・建築・不動産の資格</h3>
+
+        <details class="q">
+          <summary>1級土木施工管理技士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>土木工事の施工管理（工程・品質・安全・原価の管理）を行う技術検定の最上級。大規模工事で監理技術者・主任技術者として選任されるための資格です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は受検年度末に19歳以上であれば実務経験なしで受験できます。第二次検定は第一次合格に加え、学歴等に応じた実務経験が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一＋応用能力問題）＋第二次検定（施工管理の記述式）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>実務経験者向けの上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本本体、大鉄工業、広成建設、JR西日本レールテック、ジェイアール西日本コンサルタンツなどの土木工事・施工管理部門で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、施工管理職として工事を任される段階で必要性が高まる資格です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 全国建設研修センター）</b>
+              <p>令和8年度：第一次検定 申込 2026年3月23日〜4月6日・試験 7月5日(日)（<strong>いずれも終了</strong>）／ 第二次検定 試験 10月4日(日)（終了）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は3月頃、第一次検定は7月頃、第二次検定は10月頃。例年12月中旬に国土交通省・同センターから公表されます）。</p>
+              <p><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/tochi_fudousan_kensetsugyo_const_fr1_000001_00055.html" target="_blank" rel="noopener">公式・技術検定の実施計画（国土交通省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>2級土木施工管理技士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>土木工事の主任技術者として、比較的小規模な工事の施工管理を行うための技術検定です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は受検年度末に17歳以上であれば受験でき、学生でも挑戦しやすい制度です。第二次検定には実務経験が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一）＋第二次検定（記述式）。第一次検定は前期・後期の年2回実施があります。</dd>
+              <dt>難易度の目安</dt><dd>中級レベル。第一次は学力中心、第二次は実務寄りです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>大鉄工業、広成建設、JR西日本レールテックなどの施工管理業務で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（全国建設研修センター）</b>
+              <p>令和8年度：前期 第一次検定 申込 2026年3月4日〜3月18日・試験 6月7日(日)（<strong>終了</strong>）／ 後期・第二次検定 申込 7月8日〜7月22日・試験 10月25日(日)（終了）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：前期は申込3月頃・試験6月頃、後期は申込7月頃・試験10月頃）。</p>
+              <p><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/tochi_fudousan_kensetsugyo_const_fr1_000001_00055.html" target="_blank" rel="noopener">公式・技術検定の実施計画（国土交通省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>1級建築施工管理技士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>建築工事の施工管理を行う技術検定の最上級。大規模な建築工事で監理技術者・主任技術者として選任されるための資格です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は受検年度末に19歳以上であれば実務経験なしで受験できます。第二次検定は第一次合格＋学歴等に応じた実務経験が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一＋応用能力問題）＋第二次検定（記述式）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>実務経験者向けの上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本ビルト、大鉄工業、JR西日本不動産開発などの建築工事・施工管理部門で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、施工管理職では必要性が高い資格です。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 建設業振興基金）</b>
+              <p>令和8年度：申込 2026年2月13日〜2月27日（第一次のみの受検は4月7日まで）・第一次検定 7月19日(日)・第二次検定 10月18日(日)（<strong>いずれも終了</strong>）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は2月頃、第一次検定は7月頃、第二次検定は10月頃）。</p>
+              <p><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/tochi_fudousan_kensetsugyo_const_fr1_000001_00055.html" target="_blank" rel="noopener">公式・技術検定の実施計画（国土交通省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>2級建築施工管理技士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>建築工事の主任技術者として、比較的小規模な工事の施工管理を行うための技術検定です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は受検年度末に17歳以上であれば受験できます。第二次検定には実務経験が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一）＋第二次検定（記述式）。第一次検定は前期・後期の年2回実施があります。</dd>
+              <dt>難易度の目安</dt><dd>中級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本ビルト、大鉄工業、広成建設などの施工管理業務で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（建設業振興基金）</b>
+              <p>令和8年度：前期 第一次検定 申込 2026年2月6日〜2月27日・試験 6月14日(日)（<strong>終了</strong>）／ 後期 申込（インターネット6月29日〜7月27日、書面7月13日〜7月27日）・試験 11月8日(日)（終了）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：前期は申込2月頃・試験6月頃、後期は申込7月頃・試験11月頃）。</p>
+              <p><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/tochi_fudousan_kensetsugyo_const_fr1_000001_00055.html" target="_blank" rel="noopener">公式・技術検定の実施計画（国土交通省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>1級管工事施工管理技士<span class="st soon">第二次検定は12月6日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>空調・給排水・衛生等の管工事の施工管理を行う技術検定の最上級。大規模工事で監理技術者・主任技術者として選任されるための資格です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は受検年度末に19歳以上であれば実務経験なしで受験できます。第二次検定は第一次合格＋実務経験が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一＋応用能力問題）＋第二次検定（記述式）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>実務経験者向けの上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>大阪エネルギーサービス（プラント配管・設備）、ジェイアール西日本ビルト（建築設備）などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（全国建設研修センター）</b>
+              <p>令和8年度：申込 2026年5月7日〜5月21日（終了）／ 第一次検定 9月6日(日)（終了）／ <strong>第二次検定 12月6日(日)（これから）</strong>。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は5月頃、第一次検定は9月頃、第二次検定は12月頃）。</p>
+              <p><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/tochi_fudousan_kensetsugyo_const_fr1_000001_00055.html" target="_blank" rel="noopener">公式・技術検定の実施計画（国土交通省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>2級管工事施工管理技士<span class="st soon">後期・第二次は11月15日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>管工事の主任技術者として、比較的小規模な工事の施工管理を行うための技術検定です。</dd>
+              <dt>受験資格</dt><dd>第一次検定は受検年度末に17歳以上であれば受験できます。第二次検定には実務経験が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次検定（四肢択一）＋第二次検定（記述式）。第一次検定は前期・後期の年2回実施があります。</dd>
+              <dt>難易度の目安</dt><dd>中級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本ビルト（建築設備）、大阪エネルギーサービスなどで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（全国建設研修センター）</b>
+              <p>令和8年度：前期 第一次検定 申込 2026年3月4日〜3月18日・試験 6月7日(日)（<strong>終了</strong>）／ 後期・第二次検定 申込 7月14日〜7月28日（終了）・<strong>試験 11月15日(日)（これから）</strong>。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：前期は申込3月頃・試験6月頃、後期は申込7月頃・試験11月頃）。</p>
+              <p><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/tochi_fudousan_kensetsugyo_const_fr1_000001_00055.html" target="_blank" rel="noopener">公式・技術検定の実施計画（国土交通省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>建築士（一級建築士・二級建築士）<span class="st done">令和8年は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>建築物の設計と工事監理は建築士の独占業務です。扱える建築物の規模・構造により一級・二級・木造の区分があり、大規模・複雑な建築物は一級建築士でなければ設計・監理できません。</dd>
+              <dt>受験資格</dt><dd>一級は大学等で指定科目を修めて卒業＋実務経験2年以上など、二級は大学・高専等で指定科目を修めて卒業、または実務経験7年以上など、学歴・実務の要件があります（詳細は実施機関の案内で確認してください）。</dd>
+              <dt>試験形式</dt><dd>学科の試験（四肢択一、一級5科目・二級4科目）＋設計製図の試験。年1回。</dd>
+              <dt>難易度の目安</dt><dd>一級は最難関級、二級は中〜上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本不動産開発、ジェイアール西日本ビルト、大鉄工業、広成建設、JR西日本本体の建築部門などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>設計・工事監理の業務そのものに必要な資格ですが、入社時点で必須かどうかは職種によります（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（公益財団法人 建築技術教育普及センター）</b>
+              <p>令和8年：申込 2026年4月1日〜4月14日（<strong>終了</strong>）。一級建築士：学科 7月26日(日)・設計製図 10月11日(日)（いずれも終了）。二級建築士：学科 7月5日(日)・設計製図 9月13日(日)（いずれも終了）。</p>
+              <p>令和9年の日程は<strong>公式未発表</strong>です（例年の時期：申込は4月上旬、一級は学科7月頃・製図10月頃、二級は学科7月頃・製図9月頃）。</p>
+              <p><a href="https://www.jaeic.or.jp/.assets/shikennittei-1k-2026.pdf" target="_blank" rel="noopener">公式・令和8年 一級建築士試験 日程等（PDF）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>技術士<span class="st soon">第一次試験は11月22日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>科学技術分野の高度な専門知識と応用能力を持つ技術者であることを証明する国家資格（名称独占）。建設部門など21の技術部門があり、公共工事のコンサルティング業務では管理技術者等の要件になる場合があります。</dd>
+              <dt>受験資格</dt><dd>第一次試験は制限なし（誰でも受験可）。第二次試験は、第一次合格等で技術士補となる資格を得たうえで、部門ごとに定める実務経験年数（原則として通算7年超など、条件により短縮あり）が必要です。</dd>
+              <dt>試験形式</dt><dd>第一次試験（基礎科目・適性科目・専門科目の択一式）／第二次試験（筆記試験＋口頭試験）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>技術系資格の最難関の一つで、特に第二次試験は実務経験を前提とした高度な内容です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本コンサルタンツ（建設コンサルタント）、JR西日本本体の技術系部門などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、コンサルタント業務では管理技術者の要件になる場合があります（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（公益社団法人 日本技術士会）</b>
+              <p>令和8年度 第二次試験：申込 2026年4月1日〜4月15日（終了）／ 筆記 7月19日(日)・7月20日(月・祝)（終了）／ 口頭試験 2026年12月〜2027年1月（筆記合格者が対象）。</p>
+              <p>令和8年度 第一次試験：申込 6月10日〜6月24日（終了）／ <strong>試験 11月22日(日)（これから。合同セミナーと同じ日です）</strong>。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：第二次は申込4月頃・筆記7月頃、第一次は申込6月頃・試験11月頃）。</p>
+              <p><a href="https://www.engineer.or.jp/c_topics/011/attached/attach_11789_1.pdf" target="_blank" rel="noopener">公式・令和8年度 技術士第一次試験 受験申込み案内（PDF）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>RCCM（シビルコンサルティングマネージャ）<span class="st done">2026年度は終了</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>一般社団法人建設コンサルタンツ協会の民間資格。建設コンサルタント業務の管理技術者・照査技術者の要件として使われ、技術士と並んでコンサルタント業界で重視されます。</dd>
+              <dt>受験資格</dt><dd>受験する部門ごとに、学歴に応じた建設コンサルタント業務等の実務経験年数が必要です。</dd>
+              <dt>試験形式</dt><dd>試験A（択一式）と試験B（記述式）をCBT方式で受験（予約制）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>実務経験者向けの上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本コンサルタンツで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（建設コンサルタンツ協会）</b>
+              <p>2026年度：申込 2026年5月11日〜6月10日（<strong>終了</strong>）／ 試験期間 9月1日〜10月31日（CBT・予約制、終了）／ 合格発表 2027年3月1日（予定）。</p>
+              <p>2027年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は5〜6月頃、試験は9〜10月頃）。</p>
+              <p><a href="https://www.rccm-cpd.com/rccm/rccmtop.html" target="_blank" rel="noopener">公式・RCCM資格ホームページ</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>測量士・測量士補<span class="st done">令和8年は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>測量士は基本測量・公共測量の計画の作成と実施の責任者となる国家資格で、測量業者の営業所には測量士の配置が必要です。測量士補は測量士の作成した計画に従って測量に従事します。</dd>
+              <dt>受験資格</dt><dd>両試験とも受験資格の制限はありません（合格後に国土地理院へ登録して資格を取得します）。</dd>
+              <dt>試験形式</dt><dd>測量士：択一式＋記述式。測量士補：択一式28問。年1回、同日実施です。</dd>
+              <dt>難易度の目安</dt><dd>測量士補は中級レベル、測量士は上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本レールテック（軌道の測量・検査）、ジェイアール西日本コンサルタンツ、大鉄工業などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（国土交通省 国土地理院）</b>
+              <p>令和8年：申込 2026年1月5日〜1月22日・試験 5月17日(日)（<strong>いずれも終了</strong>）。</p>
+              <p>令和9年の日程は<strong>公式未発表</strong>です（例年の時期：申込は1月頃、試験は5月頃。受験案内は例年12月中旬に公表されます）。</p>
+              <p><a href="https://www.gsi.go.jp/common/000273935.pdf" target="_blank" rel="noopener">公式・令和8年測量士・測量士補試験 受験案内（PDF）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>不動産鑑定士<span class="st done">令和8年は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>不動産の鑑定評価を行うことは不動産鑑定士の独占業務です。不動産の適正な価格・賃料を評価する専門家です。</dd>
+              <dt>受験資格</dt><dd>短答式試験は制限なし（誰でも受験可）。論文式試験は短答式の合格者等が対象です。試験合格後は実務修習を経て登録します。</dd>
+              <dt>試験形式</dt><dd>短答式（マークシート）＋論文式（3日間の記述式）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>法律・経済・会計まで問われる最難関級の資格です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本不動産投資顧問（不動産ファンド運用）、JR西日本不動産開発などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（国土交通省 土地鑑定委員会）</b>
+              <p>令和8年：申込 2026年2月5日〜3月6日（<strong>終了</strong>）／ 短答式試験 5月17日(日)（終了）／ 論文式試験 8月1日(土)〜8月3日(月)（終了）。</p>
+              <p>令和9年の日程は<strong>公式未発表</strong>です（例年の時期：申込は2〜3月頃、短答式は5月頃、論文式は8月頃）。</p>
+              <p><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/tochi_fudousan_kensetsugyo_fr4_000001_00320.html" target="_blank" rel="noopener">公式・令和8年不動産鑑定士試験（国土交通省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>賃貸不動産経営管理士<span class="st soon">試験は11月15日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>賃貸住宅の管理に関する国家資格。賃貸住宅管理業法に基づき、賃貸住宅管理業者が営業所ごとに置く「業務管理者」の要件の一つとなります。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。なお業務管理者として登録するには、実務経験等の要件が別途あります（宅地建物取引士が指定講習を修了するルートもあります）。</dd>
+              <dt>試験形式</dt><dd>四肢択一・50問・120分（賃貸不動産経営管理士講習の修了者は45問に免除）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>中級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本プロパティーズ（賃貸住宅事業）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般社団法人 賃貸不動産経営管理士協議会）</b>
+              <p>令和8年度：申込 WEB 2026年8月3日〜9月30日・郵送 8月3日〜9月24日（<strong>いずれも終了</strong>）／ <strong>試験 11月15日(日) 13:00〜15:00（間近）</strong>。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は8〜9月頃、試験は11月頃）。</p>
+              <p><a href="https://www.zennichi.or.jp/2026/08/07/%E8%B3%83%E8%B2%B8%E4%B8%8D%E5%8B%95%E7%94%A3%E7%B5%8C%E5%96%B6%E7%AE%A1%E7%90%86%E5%A3%AB%E5%8D%94%E8%AD%B0%E4%BC%9A%E3%80%8C%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6%E3%80%8C%E8%B3%83%E8%B2%B8/" target="_blank" rel="noopener">協議会の令和8年度試験案内（全日本不動産協会サイト掲載）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>管理業務主任者<span class="st soon">試験は12月6日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>マンション管理業者が管理組合等との管理委託契約に際して行う重要事項の説明などを担う国家資格。管理業者の事務所には、業務量に応じた人数の管理業務主任者の設置が義務付けられています。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。ただし合格後の登録には、マンション管理業務に関する実務経験2年以上等が必要です。</dd>
+              <dt>試験形式</dt><dd>四肢択一・50問・2時間。年1回。</dd>
+              <dt>難易度の目安</dt><dd>中級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本プロパティーズ（マンション管理・賃貸管理）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般社団法人 マンション管理業協会）</b>
+              <p>令和8年度：申込 Web 2026年8月3日〜9月30日・郵送 8月3日〜8月24日（<strong>いずれも終了</strong>）／ <strong>試験 12月6日(日) 13:00〜15:00（これから）</strong>。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は8〜9月頃、試験は12月頃）。</p>
+              <p><a href="https://www.kanrikyo.or.jp/kanri/siken.html" target="_blank" rel="noopener">公式・管理業務主任者試験のご案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>ビル経営管理士<span class="st soon">試験は12月5日〜</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>賃貸オフィスビルの企画・立案、賃貸営業、管理・運営の専門知識を持つことを証明する資格（国土交通大臣登録の証明事業）。不動産特定共同事業法の業務管理者など、各種登録の要件にもなります。</dd>
+              <dt>受験資格</dt><dd>試験自体に制限はありません（登録には実務経験の要件を満たす必要があります）。同センターのビル経営管理講座の修了者は記述式問題が免除され、3科目受験となります。</dd>
+              <dt>試験形式</dt><dd>CBT方式。4科目（①企画・立案 ②賃貸営業 ③管理・運営 ④記述式問題）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>中〜上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本ステーションシティ、JR西日本SC開発、JR西日本アーバン開発、京都駅ビル開発など、駅ビル・SCの運営会社で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 日本ビルヂング経営センター）</b>
+              <p>2026年度：申込 2026年10月1日〜10月31日（<strong>終了</strong>）／ <strong>4科目受験（記述式あり）12月5日(土)、3科目受験（記述式免除）12月6日(日)〜12月12日(土)のいずれか1日（これから）</strong>。</p>
+              <p><a href="https://www.bmi.or.jp/cba/test-guide.html" target="_blank" rel="noopener">公式・ビル経営管理士試験のご案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>建築物環境衛生管理技術者（ビル管理士）<span class="st done">令和8年度は終了</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>建築物衛生法に基づく国家資格（通称：ビル管理士）。一定規模以上の特定建築物（百貨店・事務所・興行場など）では、環境衛生上の維持管理を監督する技術者として選任が義務付けられています。</dd>
+              <dt>受験資格</dt><dd>建築物の環境衛生上の維持管理に関する実務に、業として2年以上従事したことが必要です。別途、同センターの講習会（受講資格あり）を修了して取得するルートもあります。</dd>
+              <dt>試験形式</dt><dd>択一式・全180問を午前・午後に分けて実施。年1回。</dd>
+              <dt>難易度の目安</dt><dd>出題範囲が広く、合格率は例年2割前後の上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本総合ビルサービス（ビル設備管理）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、特定建築物の管理技術者として選任される業務では必要になる資格です。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（公益財団法人 日本建築衛生管理教育センター）</b>
+              <p>第56回（令和8年度）：申込（受験の手引の配布期間）2026年5月7日〜6月15日・試験 10月4日(日)・合格発表 11月10日（<strong>いずれも終了</strong>）。</p>
+              <p>次回（第57回）の試験概要は、令和9年4月中旬に掲載予定と案内されています（例年の時期：申込は5〜6月頃、試験は10月頃）。</p>
+              <p><a href="https://www.jahmec.or.jp/kokka/" target="_blank" rel="noopener">公式・国家試験情報</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>消防設備士<span class="st any">都道府県ごとに実施</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>消防用設備等（消火設備・警報設備・避難設備など）の工事・整備・点検を行う国家資格。甲種は工事・整備・点検、乙種は整備・点検ができ、設備の種類ごとに第1類〜第5類（甲種）・第1類〜第7類（乙種）等に分かれます。対象設備の工事・整備は有資格者の独占業務です。</dd>
+              <dt>受験資格</dt><dd>乙種は制限なし（誰でも受験可）。甲種は大学等での科目履修、他の国家資格、実務経験などのいずれかの要件が必要です（特類はさらに要件あり）。</dd>
+              <dt>試験形式</dt><dd>筆記試験（四肢択一）＋実技試験（写真・イラストによる鑑別等）。都道府県ごとに年複数回実施されます。</dd>
+              <dt>難易度の目安</dt><dd>類によって異なり、電気系では乙種第4類・甲種第4類（自動火災報知設備等）が入口として中級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本総合ビルサービス、京都駅ビル開発など、ビル・施設の設備管理を行う会社で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 消防試験研究センター）</b>
+              <p><strong>全国統一の試験日はなく、都道府県支部ごとに日程が公表されます。</strong>一例（大阪府）：令和8年度 第1回 試験 2026年7月26日(日)（終了）／ 第2回 試験 2027年3月14日(日)、申込 2027年1月14日〜1月21日。受験する都道府県の支部ページで最新日程をご確認ください。</p>
+              <p><a href="https://www.shoubo-shiken.or.jp/branch/27osaka/shoubou.html" target="_blank" rel="noopener">公式・消防設備士試験（大阪府支部の例）</a></p>
+            </div>
+          </div>
+        </details>
+        <h3 class="qg-cat">エネルギー・プラントの資格</h3>
+
+        <details class="q">
+          <summary>エネルギー管理士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>省エネ法（エネルギーの使用の合理化等に関する法律）に基づく国家資格（免状）。一定規模以上の工場・事業場で選任される「エネルギー管理者」等の選任要件となります。</dd>
+              <dt>受験資格</dt><dd>試験自体は制限なし（誰でも受験可）。ただし免状の交付には、エネルギーの使用の合理化に関する実務経験1年以上が必要です。</dd>
+              <dt>試験形式</dt><dd>4課目の筆記試験（マークシート）。熱分野・電気分野のいずれかを選択する課目があり、課目合格制度があります。年1回。</dd>
+              <dt>難易度の目安</dt><dd>計算問題が多く、上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>大阪エネルギーサービス（地域冷暖房プラントの運転・保守）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般財団法人 省エネルギーセンター）</b>
+              <p>令和8年度（第48回）：申込 2026年4月6日〜6月22日・試験 8月2日(日)（<strong>いずれも終了</strong>）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：申込は4〜6月頃、試験は8月頃）。なお、実務経験者向けに講習と修了試験で取得する「エネルギー管理研修」のルートもあります。</p>
+              <p><a href="https://www.eccj.or.jp/mgr1/index.html" target="_blank" rel="noopener">公式・エネルギー管理士試験の案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>ボイラー・タービン主任技術者<span class="st any">試験ではなく免状交付制</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>電気事業法に基づく免状（第一種・第二種）。発電や熱供給に使うボイラー・タービン設備の保安の監督を行う「ボイラー・タービン主任技術者」として選任されるための資格です。</dd>
+              <dt>受験資格</dt><dd>筆記試験はなく、学歴と、設備の種類・規模（圧力・出力等）に応じた実務経験などの要件を満たすことで、経済産業大臣から免状が交付される制度です。</dd>
+              <dt>試験形式</dt><dd>試験は行われません（書類審査による免状交付）。</dd>
+              <dt>難易度の目安</dt><dd>試験型の資格ではないため難易度の目安はありません。要件となる実務経験の蓄積が前提です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>大阪エネルギーサービス（熱供給プラントの保安監督）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありませんが、対象設備の主任技術者として選任される業務では必要になる免状です。</dd>
+            </dl>
+            <div class="q-sched"><b>取得方法について</b>
+              <p><strong>統一の受験日はありません</strong>（試験制ではなく、要件を満たした時点で随時、免状の交付申請を行います）。要件の詳細は経済産業省の免許制度の案内でご確認ください。</p>
+              <p><a href="https://www.meti.go.jp/information/license/c_text02.html" target="_blank" rel="noopener">経済産業省・免許制度の案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <h3 class="qg-cat">運輸・整備・船舶の資格</h3>
+
+        <details class="q">
+          <summary>運行管理者<span class="st soon">第2回は2027年2〜3月頃の計画</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>バス・トラックなどの運送事業者が営業所ごとに選任しなければならない「運行管理者」になるための国家試験（貨物・旅客の2種類）。運転者の勤務・休憩の管理、車両の点検、運行の安全確保を担います。</dd>
+              <dt>受験資格</dt><dd>運行管理に関する実務経験1年以上、または国土交通大臣の認定を受けた基礎講習を修了していること（修了予定での申請も可）が必要です。</dd>
+              <dt>試験形式</dt><dd>CBT方式・30問・90分。年2回実施され、各回とも約1か月の試験期間の中で日時・会場を選んで受験します。</dd>
+              <dt>難易度の目安</dt><dd>中級レベル（合格率は例年3〜4割程度）です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>西日本ジェイアールバス、JRバス中国の運行管理・配車部門で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>運行管理者として選任される業務では必須の資格です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（公益財団法人 運行管理者試験センター）</b>
+              <p>令和8年度 第1回：申請 2026年6月15日〜7月15日・試験期間 8月8日〜9月6日（<strong>いずれも終了</strong>）。</p>
+              <p>第2回は、2027年2月中旬〜3月中旬の概ね1か月間に実施する計画で、詳細な日程は2026年11月頃に公表予定と案内されています。</p>
+              <p><a href="https://www.unkan.or.jp/" target="_blank" rel="noopener">公式・運行管理者試験センター</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>自動車整備士<span class="st soon">第2回の申込は12月14日〜</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>自動車の整備に関する技能を証明する資格（一級・二級・三級、ガソリン／ジーゼル／二輪／シャシ等）。認証整備工場での整備業務や、整備主任者等の配置に関わります。</dd>
+              <dt>受験資格</dt><dd>級・種類ごとに、自動車整備の実務経験年数が必要です（指定の養成施設を卒業した場合は短縮・免除があります）。登録試験の合格後に国へ登録するルートと、養成施設卒業＋技能検定のルートがあります。</dd>
+              <dt>試験形式</dt><dd>学科試験（筆記）＋実技試験（一級小型は口述試験も）。登録試験は年2回実施されます。</dd>
+              <dt>難易度の目安</dt><dd>三級は入門、二級は中級、一級は上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>西日本ジェイアールバス、JRバス中国（整備職）、JR西日本レンタカー&amp;リース（整備系）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般社団法人 日本自動車整備振興会連合会・自動車整備技能登録試験）</b>
+              <p>令和8年度 第1回（第113回）：申請 2026年7月27日〜7月31日・学科試験 10月4日(日)（<strong>いずれも終了</strong>）／ 実技試験 2027年1月17日(日)。</p>
+              <p>第2回（第114回）：<strong>申請 12月14日〜12月18日（これから）</strong>／ 学科試験 2027年3月14日(日)／ 一級小型の口述試験 2027年5月9日(日)。</p>
+              <p><a href="https://www.jaspa.or.jp/Portals/0/resources/jaspahp/user/mechanic/pdf/R08info_examination.pdf" target="_blank" rel="noopener">公式・自動車整備技能登録試験のご案内（令和8年度・PDF）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>海技士<span class="st soon">次回・2月定期の申込は12月23日〜</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>船舶職員（航海士・機関士・通信士など）として船舶に乗り組むために必要な海技免状（一級〜六級、航海・機関・通信・電子通信）。船舶の大きさや航行区域、職位ごとに必要な級が定められています。</dd>
+              <dt>受験資格</dt><dd>級ごとに、乗船履歴（実務経験）などの要件があります。筆記・口述のほか身体検査（視力・聴力等）も行われます。</dd>
+              <dt>試験形式</dt><dd>筆記試験＋口述試験。定期試験は年4回（4月・7月・10月・2月定期）実施され、級・科目ごとに日割が定められます。</dd>
+              <dt>難易度の目安</dt><dd>級により大きく異なり、上級は難関です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本宮島フェリー（乗組員職）で必要になります。</dd>
+              <dt>必須／有利</dt><dd>乗組員職では、職務に応じた海技免状が<strong>必須</strong>です（表でも「必須」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（国土交通省・各地方運輸局）</b>
+              <p>令和8年度 10月定期は終了しました。次回・令和9年2月定期：<strong>筆記試験の受験申請 2026年12月23日〜2027年1月18日</strong>、試験は2027年2月1日(月)から級・科目ごとに実施（口述試験のみ受験する場合の申請は2027年2月1日まで）。詳細な日割は、受験する地方運輸局の案内でご確認ください。</p>
+              <p><a href="http://wwwtb.mlit.go.jp/chubu/sennin/nittei.htm" target="_blank" rel="noopener">公式・海技士試験 定期試験日程表（中部運輸局の例）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>小型船舶操縦士<span class="st any">地域・機関ごとに随時</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>小型船舶の操縦に必要な免許（一級・二級・特殊）。小型の旅客船などで船長として乗り組む場合は、一級免許に加えて特定操縦免許等が必要になる場合があります。</dd>
+              <dt>受験資格</dt><dd>一級は18歳以上、二級は16歳以上（年齢のほか視力・聴力等の身体基準があります）。国の登録を受けた小型船舶教習所の教習を修了すると、国家試験の学科・実技が免除されるルートが一般的です。</dd>
+              <dt>試験形式</dt><dd>学科試験＋実技試験（国家試験の実施機関は日本海洋レジャー安全・振興協会）。地域ごとに実施されます。</dd>
+              <dt>難易度の目安</dt><dd>入門〜中級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本宮島フェリーで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>小型船舶の操縦業務では必須の免許です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>受験日について</b>
+              <p><strong>統一の受験日はなく、試験機関・教習所ごとに随時実施</strong>されます。最新の日程は、国家試験の実施機関（日本海洋レジャー安全・振興協会）や教習所の公式案内でご確認ください。</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>動力車操縦者免許（鉄道の運転士免許）<span class="st any">入社後の養成が中心</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>鉄道・軌道の動力車（列車）を操縦するための国家免許。運転士として乗務するには必須の免許です。</dd>
+              <dt>受験資格</dt><dd>一般公募の試験ではなく、鉄道事業者の養成所等で養成を受け、国家試験（学科・技能）に合格して取得するのが一般的です。視力・聴力・色覚等の身体基準があります。</dd>
+              <dt>試験形式</dt><dd>学科試験＋技能試験（事業者の養成課程を通じて受験します）。</dd>
+              <dt>難易度の目安</dt><dd>養成課程型のため、一般の試験資格のような難易度の目安はありません。</dd>
+              <dt>役立つ会社・仕事</dt><dd>嵯峨野観光鉄道、JR西日本本体の運転士職で必要です。</dd>
+              <dt>必須／有利</dt><dd>運転士として乗務するには<strong>必須</strong>で、入社後の養成で取得するのが一般的です。</dd>
+            </dl>
+            <div class="q-sched"><b>受験日について</b>
+              <p><strong>統一の申込期間・受験日はありません</strong>（各鉄道事業者の採用・養成スケジュールによります）。</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>中型自動車免許<span class="st any">統一の受験日なし</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>中型自動車（車両総重量7.5トン以上11トン未満など）を運転できる免許。物流・配送業務で対象車両を運転する際に必要です。</dd>
+              <dt>受験資格</dt><dd>20歳以上で、普通免許等を通算2年以上保有していることなどが要件です（特例・経過措置があるため詳細は公式案内で確認してください）。</dd>
+              <dt>試験形式</dt><dd>指定自動車教習所での技能・学科教習と卒業検定などが中心で、普通自動車免許と同様の仕組みです。</dd>
+              <dt>難易度の目安</dt><dd>免許取得型で、教習の修了が中心です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本マルニックス（物流系）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>対象車両を運転する業務では必須です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>受験日について</b>
+              <p><strong>統一の受験日はありません</strong>（教習所／運転免許試験場ごとに日程が決まります）。</p>
+            </div>
+          </div>
+        </details>
+        <h3 class="qg-cat">金融・経営・IT・販売の資格</h3>
+
+        <details class="q">
+          <summary>証券アナリスト（CMA）<span class="st done">2026年の試験は終了</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>公益社団法人日本証券アナリスト協会の認定資格（CMA＝日本証券アナリスト協会認定アナリスト）。証券分析と投資運用に関する高度な専門知識を証明します。第2次試験の合格と実務経験等を経てCMAとして登録されます。</dd>
+              <dt>受験資格</dt><dd>第1次試験は、協会の通信講座「第1次レベル講座」の受講・修了が必要です。第2次試験は第1次試験の全科目合格と「第2次レベル講座」の受講が前提となります。</dd>
+              <dt>試験形式</dt><dd>第1次試験：3科目の科目別試験（選択式、CBT方式とPBT方式の併用、年2回）。第2次試験：全分野を対象とした記述式の総合試験（年1回）。</dd>
+              <dt>難易度の目安</dt><dd>金融系資格の中でも上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本不動産投資顧問、JR西日本フィナンシャルマネジメント、JR西日本イノベーションズなど、投資・運用・財務系の会社で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本証券アナリスト協会）</b>
+              <p>2026年：第2次試験 申込 3月15日〜4月14日・試験 6月7日(日)（<strong>終了</strong>）／ 第1次秋試験（国内CBT）申込 7月1日〜9月4日・試験 9月27日(日)（終了）。</p>
+              <p>次回・第1次春試験の日程は<strong>公式未発表</strong>です（例年の時期：4月下旬頃）。</p>
+              <p><a href="https://www.saa.or.jp/cma_program/cma1/test/index.html" target="_blank" rel="noopener">公式・CMA第1次試験のご案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>中小企業診断士<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>中小企業の経営の診断・助言を行う国家資格（名称独占）。経営コンサルティングの代表的な資格です。</dd>
+              <dt>受験資格</dt><dd>第1次試験は制限なし（誰でも受験可）。第2次試験は、当年度または前年度の第1次試験合格者が対象です。</dd>
+              <dt>試験形式</dt><dd>第1次試験（多肢選択式・7科目、科目合格制度あり）＋第2次試験（中小企業の事例問題への筆記試験）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>難関レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本イノベーションズ（スタートアップ投資・事業共創）、TRAILBLAZER（DXコンサルティング）などで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（一般社団法人 日本中小企業診断士協会連合会）</b>
+              <p>令和8年度：第1次試験 申込 2026年4月23日〜5月27日・試験 8月1日(土)・2日(日)（<strong>終了</strong>）／ 第2次試験 申込 9月1日〜9月18日・筆記試験 10月25日(日)（終了）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：第1次は申込4〜5月頃・試験8月頃、第2次は試験10月頃）。</p>
+              <p><a href="https://www.jf-cmca.jp/contents/010_c_/010_c_r08_shiken/R08_nittei.html" target="_blank" rel="noopener">公式・令和8年度の試験日程について</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>社会保険労務士（社労士）<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>労働・社会保険諸法令の専門家である国家資格。労働社会保険諸法令に基づく申請書等の作成・提出代行などに独占業務があります。人事・労務管理の実務で役立ちます。</dd>
+              <dt>受験資格</dt><dd>大学卒業、短期大学・専門学校の修了、行政書士資格の保有など、定められた学歴・資格・実務経験のいずれかの要件を満たす必要があります（誰でも受験できる試験ではない点にご注意ください）。</dd>
+              <dt>試験形式</dt><dd>選択式試験＋択一式試験を同日に実施。年1回。</dd>
+              <dt>難易度の目安</dt><dd>難関レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本ウェルネット（人事・福利厚生業務）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（全国社会保険労務士会連合会）</b>
+              <p>第58回（令和8年度）：申込 2026年4月13日〜5月31日・試験 8月23日(日)（<strong>いずれも終了</strong>）。</p>
+              <p>第59回（令和9年度）の日程は<strong>公式未発表</strong>です（例年の時期：申込は4月中旬〜5月頃、試験は8月頃）。</p>
+              <p><a href="https://www.sharosi-siken.or.jp/" target="_blank" rel="noopener">公式・社会保険労務士試験オフィシャルサイト</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>ファイナンシャル・プランナー（FP技能検定）<span class="st any">2級・3級はCBTで通年受験可</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>職業能力開発促進法に基づく国家検定（技能検定）の1級・2級・3級。ライフプラン、保険、金融資産、税金、不動産、相続などの知識を証明します。独占業務はありませんが、金融・財務系の基礎資格として広く使われます。</dd>
+              <dt>受験資格</dt><dd>3級は制限なし。2級は3級合格、AFP認定研修の修了、実務経験などのいずれかが必要です。1級は2級合格＋実務経験等が必要です。</dd>
+              <dt>試験形式</dt><dd>学科試験＋実技試験。2級・3級はCBT方式で通年実施。1級学科は筆記試験で年3回（金融財政事情研究会＝きんざいが実施）。</dd>
+              <dt>難易度の目安</dt><dd>3級は入門、2級は中級、1級は上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本フィナンシャルマネジメントで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本FP協会／一般社団法人 金融財政事情研究会）</b>
+              <p>2級・3級：CBT方式で<strong>通年受験可</strong>です（休止期間：2026年12月28日〜2027年1月5日、2027年3月25日〜3月31日など）。</p>
+              <p>1級学科（きんざい）：2026年度は 5月24日・9月13日（いずれも終了）、次回は<strong>2027年1月24日(日)</strong>です。</p>
+              <p><a href="https://www.jafp.or.jp/exam/schedule/index.shtml" target="_blank" rel="noopener">公式・試験日程（日本FP協会）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>貿易実務検定<span class="st any">インターネット試験・年複数回</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>日本貿易実務検定協会の民間検定（A級・B級・C級など）。輸出入の取引実務、貿易書類、国際物流・決済などの知識を証明します。</dd>
+              <dt>受験資格</dt><dd>制限はありません。</dd>
+              <dt>試験形式</dt><dd>インターネット試験を中心に、級ごとに年複数回実施されます（実施日は級・方式により異なります）。</dd>
+              <dt>難易度の目安</dt><dd>C級は入門、B級は中級、A級は上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本商事で、輸出入業務がある場合に役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本貿易実務検定協会）</b>
+              <p><strong>統一の試験日はなく、級ごとに実施日が設定されます。</strong>申込期間・実施日は、同協会の公式案内でご確認ください。</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>販売士（リテールマーケティング検定）<span class="st any">ネット試験で随時受験可</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>日本商工会議所の検定試験（1級・2級・3級）。小売・流通業のマーケティング、マーチャンダイジング、店舗運営などの知識を証明し、合格者は級に応じて「販売士」を名乗ることができます。</dd>
+              <dt>受験資格</dt><dd>制限はありません（誰でも受験可）。</dd>
+              <dt>試験形式</dt><dd>全級ともネット試験（CBT）方式で、試験会場ごとに随時実施されます。5科目構成です。</dd>
+              <dt>難易度の目安</dt><dd>3級は入門、2級は中級、1級は上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本デイリーサービスネット、ジェイアールサービスネット各社、ジェイアール西日本伊勢丹、駅ビル・SC運営会社など、販売系の会社全般で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本商工会議所・各地商工会議所）</b>
+              <p><strong>統一の試験日はなく、ネット試験会場ごとに随時実施</strong>されます。申込は商工会議所検定の公式サイトから会場と日時を選んで行います。なお、2027年度以降は科目体系が5科目から4科目へ級ごとに順次変更される予定が公表されています。</p>
+              <p><a href="https://www.kentei.ne.jp/retailsales" target="_blank" rel="noopener">公式・リテールマーケティング（販売士）検定</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>応用情報技術者<span class="st soon">前期・科目Bは11月24日〜12月6日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>情報処理技術者試験（国家試験）のレベル3区分。ITエンジニアとしての応用的な知識・技能を証明します。独占業務はありません。基本情報技術者の一つ上の区分です。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。</dd>
+              <dt>試験形式</dt><dd>2026年度からCBT方式に移行し、前期・後期の期間実施となりました（科目A＝多肢選択式、科目B＝記述・多肢選択等。申込時に両科目の日時・会場を予約します）。ネットワークスペシャリストなどの高度試験も、同じ前期・後期の枠組みで実施されます。</dd>
+              <dt>難易度の目安</dt><dd>上級寄りの中〜上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本ITソリューションズ、TRAILBLAZER、JR西日本光ネットワークなどで役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（IPA 情報処理推進機構）</b>
+              <p>令和8年度 前期：申込 2026年10月6日〜11月7日（<strong>終了</strong>）／ 科目A試験 10月28日〜11月10日（終了）／ <strong>科目B試験 11月24日(火)〜12月6日(日)（これから）</strong>。</p>
+              <p>後期試験は2027年1月下旬〜2月頃に実施予定です。申込期間などの詳細は、IPAの後期試験の案内でご確認ください。</p>
+              <p><a href="https://www.ipa.go.jp/shiken/2026/ap_koudo_sc_kikan.html" target="_blank" rel="noopener">公式・令和8年度 応用情報技術者試験等の申込・実施期間（IPA）</a></p>
+            </div>
+          </div>
+        </details>
+        <h3 class="qg-cat">旅行・ホテル・接客・その他の資格</h3>
+
+        <details class="q">
+          <summary>旅行業務取扱管理者（総合／国内）<span class="st done">令和8年度は終了・次年度未発表</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>旅行業法に基づく国家資格。旅行業者の営業所ごとに選任が義務付けられる「旅行業務取扱管理者」になるための試験です。総合は国内・海外の両方、国内は国内旅行のみを取り扱えます。</dd>
+              <dt>受験資格</dt><dd>なし（誰でも受験可）。国内の合格者は、総合を受験する際に共通科目の一部が免除されます。</dd>
+              <dt>試験形式</dt><dd>総合：筆記試験（年1回）。国内：CBT方式で、試験期間の中から日時を選んで受験します。</dd>
+              <dt>難易度の目安</dt><dd>国内は中級、総合は海外実務や運賃計算などが加わり中〜上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>日本旅行（営業所の管理者、ツアーの企画・販売）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>旅行業務取扱管理者として選任される業務では必須ですが、入社時点で必須かどうかは職種によります（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（総合＝一般社団法人 日本旅行業協会／国内＝一般社団法人 全国旅行業協会）</b>
+              <p>令和8年度 国内：申込は2026年7月15日に終了、CBT試験期間 9月3日〜9月25日（<strong>終了</strong>）。総合：申込 7月16日〜8月7日（終了）、試験 10月25日(日)（終了）。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：国内は申込7月頃・試験9月頃、総合は申込7〜8月頃・試験10月頃）。</p>
+              <p><a href="https://www.jata-net.or.jp/exam/" target="_blank" rel="noopener">公式・総合旅行業務取扱管理者試験（日本旅行業協会）</a>／<a href="https://www.mlit.go.jp/kankocho/seisaku_seido/ryokogyoho/kanrisha.html" target="_blank" rel="noopener">観光庁・旅行業務取扱管理者の案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>ホテルビジネス実務検定（H検）<span class="st soon">第1回は11月25日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>一般財団法人日本ホテル教育センターの民間検定。ホテルの宿泊・料飲・宴会・販売・管理など、ホテル実務の知識を体系的に証明します（ベーシックレベル1級・2級・3級と、マネジメントレベルがあります）。</dd>
+              <dt>受験資格</dt><dd>ベーシックレベルは制限なし。マネジメントレベルはホテル実務の経験がある方向けの区分です。</dd>
+              <dt>試験形式</dt><dd>マークシート方式。年2回実施（マネジメントレベルは年1回・11月のみ）。</dd>
+              <dt>難易度の目安</dt><dd>級により入門〜中級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本ホテルズ、JR西日本ヴィアイン、JR西日本ホロニックなどのホテル系会社で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本ホテル教育センター）</b>
+              <p>2026年度 第1回：申込 2026年10月2日〜10月23日（<strong>終了</strong>）／ <strong>試験 11月25日(水)（間近）</strong>。</p>
+              <p>第2回（ベーシックレベルのみ）：申込 2027年1月5日〜1月25日／ 試験 2027年2月27日(土)。</p>
+              <p><a href="https://www.jec-jp.org/hken/overview/" target="_blank" rel="noopener">公式・ホテルビジネス実務検定試験 試験要項</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>J.S.A.ソムリエ（ソムリエ呼称資格）<span class="st done">2026年度は終了</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>一般社団法人日本ソムリエ協会の呼称資格。ワインを中心とした酒類の知識、テイスティング能力、サービス実技を認定します。レストランの料飲部門などで専門性を示す資格です。</dd>
+              <dt>受験資格</dt><dd>ソムリエの職務に通算3年以上従事していることなど、職務・勤務時間・収入に関する要件があります（協会会員歴等により2年に短縮される場合あり）。職務要件のない「ワインエキスパート」呼称もあります。</dd>
+              <dt>試験形式</dt><dd>一次試験（CBT・120問・70分）＋二次試験（テイスティング）＋三次試験（サービス実技・論述）。年1回。</dd>
+              <dt>難易度の目安</dt><dd>実務経験を前提とした上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本ホテルズ（レストラン等の料飲部門）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本ソムリエ協会）</b>
+              <p>2026年度：一次試験（CBT）2026年7月15日〜8月26日／ 二次試験 9月28日(月)／ 三次試験 11月9日(月)（<strong>いずれも終了</strong>）。</p>
+              <p>2027年度の日程は<strong>公式未発表</strong>です（例年の時期：一次は7〜8月頃、二次は9月頃、三次は11月頃）。</p>
+              <p><a href="https://www.sommelier.jp/exam/sommelier" target="_blank" rel="noopener">公式・J.S.A.ソムリエ試験案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>色彩検定<span class="st soon">1級2次は12月13日</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>公益社団法人色彩検定協会の民間検定（1級・2級・3級・UC級）。色の基礎知識から、配色・商品企画・販売現場への応用までを証明します。</dd>
+              <dt>受験資格</dt><dd>制限はありません（誰でも受験可）。</dd>
+              <dt>試験形式</dt><dd>年2回（夏期・冬期）。1級は1次試験（マークシート）と2次試験（記述・実技系）があります。</dd>
+              <dt>難易度の目安</dt><dd>3級は入門、2級は中級、1級は上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本ファッショングッズ（販売・商品企画）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（色彩検定協会）</b>
+              <p>2026年度 夏期：申込 2026年4月1日〜5月21日・試験 6月28日(日)（<strong>終了</strong>）。冬期：申込 8月10日〜10月1日（終了）・試験 11月8日(日)（終了）／ <strong>1級2次試験 12月13日(日)（これから）</strong>。</p>
+              <p>2027年度の日程は<strong>公式未発表</strong>です（例年の時期：夏期は申込4〜5月頃・試験6月頃、冬期は申込8〜10月頃・試験11月頃）。</p>
+              <p><a href="https://www.aft.or.jp/exam-orders" target="_blank" rel="noopener">公式・色彩検定 受検案内</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>栄養士・管理栄養士<span class="st open">管理栄養士国試は申込受付中・12月4日締切</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>栄養士は都道府県知事の免許、管理栄養士は厚生労働大臣の免許による国家資格（いずれも名称独占）。管理栄養士は、傷病者への療養のための栄養指導など、より高度な栄養管理を行います。</dd>
+              <dt>受験資格</dt><dd>栄養士免許は、指定の栄養士養成施設を卒業することで取得します（試験はありません）。管理栄養士国家試験は、管理栄養士養成施設の卒業、または栄養士として所定年数の実務経験を積んだことが必要です。</dd>
+              <dt>試験形式</dt><dd>管理栄養士国家試験はマークシート方式・年1回です。</dd>
+              <dt>難易度の目安</dt><dd>管理栄養士は中〜上級レベルで、新卒者と既卒者で合格率に大きな差があります。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本フードサービスネット（メニュー開発・給食関連業務）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>栄養士・管理栄養士として名乗って働く業務では必須の免許です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（厚生労働省）</b>
+              <p>第41回 管理栄養士国家試験：<strong>受験願書の受付 2026年11月2日〜12月4日（受付中）</strong>／ 試験 2027年2月28日(日)。</p>
+              <p>栄養士免許は養成施設の卒業後に申請して取得するもので、統一の試験日はありません。</p>
+              <p><a href="https://www.mhlw.go.jp/kouseiroudoushou/shikaku_shiken/kanrieiyoushi/about.html" target="_blank" rel="noopener">公式・管理栄養士国家試験の実施について（厚生労働省）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>食品衛生責任者<span class="st any">講習制・地域ごとに実施</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>飲食店や食品の製造・販売施設ごとに設置が求められる責任者です。都道府県等の条例に基づき、食品衛生協会等が実施する養成講習を修了することで資格を取得します（国家試験ではありません）。</dd>
+              <dt>受験資格</dt><dd>養成講習は原則として誰でも受講できます（調理師・栄養士等の有資格者は講習が免除される場合があります）。</dd>
+              <dt>試験形式</dt><dd>1日程度の養成講習（eラーニングで受講できる地域もあります）。</dd>
+              <dt>難易度の目安</dt><dd>講習修了型で、試験型の難易度はありません。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアールサービスネット各社、ジェイアール西日本フードサービスネットなどの飲食店舗で必要になります。</dd>
+              <dt>必須／有利</dt><dd>飲食店等の営業施設では設置が必要な責任者です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>受講日について</b>
+              <p><strong>統一の試験日・申込期間はなく、都道府県・保健所・食品衛生協会ごとに随時実施</strong>されます。勤務地の自治体・食品衛生協会の公式案内でご確認ください。</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>技能検定（技能士）：機械保全・電気機器組立て・ビルクリーニングなど<span class="st soon">後期は実施期間中</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>職業能力開発促進法に基づく国家検定（特級・1級・2級・3級）。職種・作業ごとに実施され、合格者は「技能士」の名称を使うことができます。表に載せた機械保全、電気機器組立て、ビルクリーニングはいずれもこの技能検定の職種です。</dd>
+              <dt>受験資格</dt><dd>級ごとに実務経験年数が必要です（学歴・職業訓練の修了等により短縮されます）。3級は専門学校等の在校生も対象になります。</dd>
+              <dt>試験形式</dt><dd>学科試験（択一式）＋実技試験。職種ごとに前期・後期のいずれかで年1回実施されます。機械保全職種は、指定試験機関である日本プラントメンテナンス協会が実施します。</dd>
+              <dt>難易度の目安</dt><dd>3級は入門、2級は中級、1級・特級は上級レベルです。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本テクノス・JR西日本新幹線テクノス・JR西日本後藤テック（機械保全・電気機器組立て）、JR西日本メンテック各社・ジェイアール西日本総合ビルサービス（ビルクリーニング）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（中央職業能力開発協会・都道府県職業能力開発協会）</b>
+              <p>令和8年度 前期：受検申請 2026年4月6日〜4月17日（<strong>終了</strong>）／ 実技試験 6月10日〜9月9日の指定日・学科試験は職種ごとに7月12日・8月23日・8月30日・9月6日（終了）。</p>
+              <p>後期：受検申請 10月5日〜10月16日（終了）／ 実技試験 2026年12月4日〜2027年2月14日の指定日・学科試験は職種ごとに2027年1月24日・1月31日・2月3日・2月7日。</p>
+              <p>令和9年度の日程は<strong>公式未発表</strong>です（例年の時期：前期は申請4月頃、後期は申請10月頃）。</p>
+              <p><a href="https://www.javada.or.jp/jigyou/gino/giken_nittei.html" target="_blank" rel="noopener">公式・技能検定試験の日程（中央職業能力開発協会）</a></p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>溶接技能者<span class="st any">地区ごとに随時実施</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>一般社団法人日本溶接協会の検定（JIS規格に基づく溶接技能者資格）。溶接方法・材料・溶接姿勢ごとに資格が分かれ、構造物や車両部品の溶接作業で技能の証明となります。</dd>
+              <dt>受験資格</dt><dd>資格の種類により、溶接の実務経験等の要件があります。</dd>
+              <dt>試験形式</dt><dd>学科試験＋実技試験。都道府県の溶接協会等を通じて実施されます。</dd>
+              <dt>難易度の目安</dt><dd>種類により入門〜上級まで幅があります。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本テクノス、JR西日本新幹線テクノス、JR西日本後藤テック（車両部品の製造・修理）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程（日本溶接協会・都道府県溶接協会）</b>
+              <p><strong>統一の試験日はなく、地域ごとに日程が公表されます。</strong>申込・日程は、お近くの都道府県溶接協会の案内でご確認ください。</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>フォークリフト運転技能講習<span class="st any">講習制・機関ごとに随時</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>労働安全衛生法に基づく技能講習。最大荷重1トン以上のフォークリフトの運転業務に就くには、この講習の修了が必要です。</dd>
+              <dt>受験資格</dt><dd>18歳以上。保有している自動車免許の種類等により、講習時間（学科・実技）が短縮されます。</dd>
+              <dt>試験形式</dt><dd>学科講習＋実技講習（都道府県労働局に登録された教習機関で実施）。修了試験に合格すると修了証が交付されます。</dd>
+              <dt>難易度の目安</dt><dd>講習修了型です。</dd>
+              <dt>役立つ会社・仕事</dt><dd>ジェイアール西日本マルニックス（物流業務）で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>対象業務に就くには必須の講習です（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>受講日について</b>
+              <p><strong>統一の試験日はなく、登録教習機関ごとに随時実施</strong>されます。お近くの教習機関の公式案内で日程をご確認ください。</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary>語学検定（TOEIC・英検など）<span class="st any">年複数回・随時実施</span></summary>
+          <div class="q-body">
+            <dl>
+              <dt>できること</dt><dd>資格（免許）ではなく、語学力を測る検定・テストです。TOEIC L&amp;R公開テストはスコア制、英検（実用英語技能検定）は級制で、採用や配属の際に語学力の目安として使われることがあります。</dd>
+              <dt>受験資格</dt><dd>制限はありません。</dd>
+              <dt>試験形式</dt><dd>TOEIC公開テストは月1〜2回程度実施。英検の従来型は年3回、CBT方式の英検S-CBTは随時実施されます。</dd>
+              <dt>難易度の目安</dt><dd>スコア・級によって異なります。</dd>
+              <dt>役立つ会社・仕事</dt><dd>JR西日本ホテルズ、JR西日本ヴィアイン、日本旅行など、訪日客対応のある会社で役立ちます。</dd>
+              <dt>必須／有利</dt><dd>入社必須ではありません（表では「あると有利・役立つ」に掲載）。</dd>
+            </dl>
+            <div class="q-sched"><b>試験日程</b>
+              <p><strong>年1回の固定日程ではなく、各テストの実施スケジュールから日時を選びます。</strong>最新の実施日・申込期間は、TOEIC公式サイト・英検公式サイトでご確認ください。</p>
+            </div>
+          </div>
+        </details>
+
+        <p style="font-size:13px;color:var(--ink2);margin:12px 0 0">なお、表の資格欄で「接客・ファッション関連の知識」「データサイエンティスト関連の知識・資格」「コンタクトセンター関連の検定」のように、特定の試験制度を指さない表現で挙げたものは、対応する単一の試験がないため、個別のセクションは設けていません。また「計測・電子回路の知識」のような知識・技能の表現も同様です。実際に目指す場合は、各社の公式採用ページで求められる水準をご確認ください。</p>
+      </section>
+
+      <section class="sources">
+        <h2>出典・使用した資料</h2>
+        <ul>
+          <li>会社名・分野・ホームページの有無：<a href="https://www.westjr.co.jp/company/info/group/" target="_blank" rel="noopener">JR西日本公式「グループ会社一覧」</a>（2026年11月11日確認）。各社のホームページURLも同ページのリンク先を記載しています。会社自体のHPリンクがなく運営施設のサイトのみリンクされている会社は、その旨を明記しています。</li>
+          <li>事業内容：同上の公式一覧の分野・施設情報に加え、各社の公式サイトの事業説明（電気系は各社公式の部門・事業案内）をもとに要約しました。</li>
+          <li>年間休日の出典（確認できた会社のみ）：JR西日本本体＝<a href="https://www.westjr.co.jp/company/recruit/fresh/recruitinfo/kosen.html" target="_blank" rel="noopener">公式・高専卒募集要項</a>／ JR西日本ヴィアイン＝<a href="https://hrmos.co/pages/hotel-viainn/jobs/2067420910215802882" target="_blank" rel="noopener">同社公式採用ページ（HRMOS）</a>／ JR西日本ホテルズ＝<a href="https://jrwest-hotels.jp/narahotel/recruit/recruit_career/" target="_blank" rel="noopener">公式・奈良ホテル募集要項</a>／ ジェイアール西日本伊勢丹＝<a href="https://www.mistore.jp/store/kyoto/recruit/sougou.html" target="_blank" rel="noopener">公式採用情報（新卒募集要項）</a>。各行にも同じ出典リンクを付けています。</li>
+          <li>職種区分の参考：<a href="https://www.westjr.co.jp/company/recruit/group/" target="_blank" rel="noopener">JR西日本公式「グループ採用情報」</a>の職種・部門説明。</li>
+          <li>合同セミナー：<a href="https://www.westjr.co.jp/company/recruit/fresh/seminar/" target="_blank" rel="noopener">JR西日本公式採用サイト「セミナー情報」</a>と<a href="https://idc.career-tasu.jp/jrwestfes/autumn/" target="_blank" rel="noopener">公式特設ページ「WEST JAPAN RAILWAY FES AUTUMN」</a>（参加企業24社の一覧を含む、いずれも2026年11月11日確認）。</li>
+          <li>個別説明会：各社の採用フロー・セミナー／説明会ページ（JR西日本電気システム・JR西日本電気テック・JR西日本ホテルズ・ジェイアール西日本フードサービスネット・JR西日本テクシア・JR西日本ヴィアイン・大鉄工業・ジェイアールサービスネット岡山の各マイナビ掲載ページ、2026年11月11日確認）。各行にリンクを付けています。</li>
+          <li>資格ガイドの試験日程：電気工事士・電気主任技術者＝<a href="https://www.shiken.or.jp/construction/second/" target="_blank" rel="noopener">電気技術者試験センター</a>（令和9年度日程は同センターの実施日程PDF）／ 電気工事施工管理技士＝<a href="https://www.fcip-shiken.jp/den2/index.html" target="_blank" rel="noopener">建設業振興基金 試験申込システム</a>／ 工事担任者・電気通信主任技術者＝日本データ通信協会および総務省掲載の公示／ 第一級陸上特殊無線技士＝<a href="https://www.nichimu.or.jp/kshiken/" target="_blank" rel="noopener">日本無線協会</a>／ 宅地建物取引士＝<a href="https://www.retio.or.jp/exam/schedule/" target="_blank" rel="noopener">不動産適正取引推進機構</a>／ 基本情報技術者＝<a href="https://www.ipa.go.jp/shiken/kubun/fe.html" target="_blank" rel="noopener">IPA</a>／ 日商簿記＝日本商工会議所・各地商工会議所／ 調理師＝各都道府県の試験案内（いずれも2026年11月11日確認）。</li>
+          <li>資格ガイド（建設・不動産・運輸・金融・旅行ほか）の試験日程：土木・管工事施工管理技士＝全国建設研修センター、建築施工管理技士＝建設業振興基金（いずれも国土交通省の技術検定実施計画で確認）／ 建築士＝建築技術教育普及センター ／ 技術士＝日本技術士会 ／ RCCM＝建設コンサルタンツ協会 ／ 測量士・測量士補＝国土地理院 ／ 不動産鑑定士・管理業務主任者・旅行業務取扱管理者＝国土交通省・観光庁および各指定試験機関（マンション管理業協会、日本旅行業協会・全国旅行業協会）／ 賃貸不動産経営管理士＝賃貸不動産経営管理士協議会 ／ ビル経営管理士＝日本ビルヂング経営センター ／ 建築物環境衛生管理技術者＝日本建築衛生管理教育センター ／ 消防設備士＝消防試験研究センター（大阪府支部の日程を一例として掲載）／ エネルギー管理士＝省エネルギーセンター ／ 運行管理者＝運行管理者試験センター ／ 自動車整備士＝日本自動車整備振興会連合会 ／ 海技士＝国土交通省・各地方運輸局 ／ 証券アナリスト＝日本証券アナリスト協会 ／ 中小企業診断士＝日本中小企業診断士協会連合会 ／ 社会保険労務士＝全国社会保険労務士会連合会 ／ FP技能検定＝日本FP協会・金融財政事情研究会 ／ 販売士＝日本商工会議所 ／ 応用情報技術者＝IPA ／ ホテルビジネス実務検定＝日本ホテル教育センター ／ ソムリエ＝日本ソムリエ協会 ／ 色彩検定＝色彩検定協会 ／ 管理栄養士＝厚生労働省 ／ 技能検定＝中央職業能力開発協会（いずれも2026年11月11日確認）。</li>
+          <li>「希望からおすすめ企業を探す」の結果は、このページに掲載したデータ（事業内容・職種タグ・資格・年間休日・説明会情報）だけを使ってブラウザ内で照合したもので、外部への送信や保存は行いません。</li>
+          <li>サムネイル画像：各社の公式ホームページ（会社HPがない会社は運営施設の公式サイト）のトップ画像を、外部参照で表示しています（2026年11月11日確認）。会社ごとの画像の元URLと取得元ページは、下の「サムネイル画像の出典一覧」に全社分を記載しています。画像が取得できなかった会社は、分野名のプレースホルダーを表示しています。</li>
+          <li>このページ自体に組み込んだ素材は上記の公式公開情報（テキスト情報）のみで、画像ファイルは同梱していません（サムネイルは各社公式サイトへの外部参照です）。</li>
+        </ul>
+        <details class="img-src">
+          <summary style="cursor:pointer;font-weight:700;font-size:14px;padding:6px 0">サムネイル画像の出典一覧（全69社：会社名／画像の元URL／取得元ページ）</summary>
+          <p style="font-size:13px;color:var(--ink2)">各社のサムネイルは、2026年11月11日に各社の公式ホームページ（会社HPがない会社は運営施設の公式サイト）を実際に開いて確認した、トップのメインビジュアルまたは og:image 等の代表画像です。このスペースではページを軽く保つため、画像データを埋め込まず、各社サイトの画像URLへの外部参照（loading="lazy" の遅延読み込み）で表示しています。そのため、各社サイト側の設定や変更によっては画像が表示されない場合があり、その場合は分野名のプレースホルダーに切り替わります。GitHub Pagesで公開する版では、この一覧の元URLから画像を取得し、サムネイル用に縮小・圧縮した軽い画像をリポジトリ側に保存して参照する方式に切り替える予定です。</p>
+          <ul class="img-src-list">
+            <li>西日本旅客鉄道株式会社（JR西日本）：画像 <a href="https://www.westjr.co.jp/assets/images/og.jpg" target="_blank" rel="noopener">www.westjr.co.jp/assets/images/og.jpg</a>／取得元ページ <a href="https://www.westjr.co.jp/" target="_blank" rel="noopener">www.westjr.co.jp/</a></li>
+            <li>JR西日本電気システム株式会社：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="https://www.j-nesco.com/" target="_blank" rel="noopener">www.j-nesco.com/</a></li>
+            <li>JR西日本電気テック株式会社：画像 <a href="https://www.wj-etec.co.jp/ogp.png" target="_blank" rel="noopener">www.wj-etec.co.jp/ogp.png</a>／取得元ページ <a href="http://www.wj-etec.co.jp/index.html" target="_blank" rel="noopener">www.wj-etec.co.jp/index.html</a></li>
+            <li>NESCO電車線工事株式会社：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="https://www.wj-nden.com/" target="_blank" rel="noopener">www.wj-nden.com/</a></li>
+            <li>NESCO変電システム株式会社：画像 <a href="https://www.nesco-hs.co.jp/assets/img/top-1.jpg" target="_blank" rel="noopener">www.nesco-hs.co.jp/assets/img/top-1.jpg</a>／取得元ページ <a href="https://www.nesco-hs.co.jp/" target="_blank" rel="noopener">www.nesco-hs.co.jp/</a></li>
+            <li>NESCO信号工事株式会社：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="https://wj-nsignal.com/" target="_blank" rel="noopener">wj-nsignal.com/</a></li>
+            <li>JR西日本光ネットワーク株式会社：画像 <a href="https://www.jrw-hikari.net/img/ogp.jpg" target="_blank" rel="noopener">www.jrw-hikari.net/img/ogp.jpg</a>／取得元ページ <a href="https://jrw-hikari.net/" target="_blank" rel="noopener">jrw-hikari.net/</a></li>
+            <li>津田電気計器株式会社：画像 <a href="https://www.tsuda-em.co.jp/assets/img/common/ogp.jpg" target="_blank" rel="noopener">www.tsuda-em.co.jp/assets/img/common/ogp.jpg</a>／取得元ページ <a href="http://www.tsuda-em.co.jp/" target="_blank" rel="noopener">www.tsuda-em.co.jp/</a></li>
+            <li>T-SoLinx株式会社：画像 <a href="https://www.t-solinx.co.jp/wp-content/themes/t-solinx/images/top/kv/01.jpg" target="_blank" rel="noopener">www.t-solinx.co.jp/wp-content/themes/t-solinx/images/top/kv/01.jpg</a>／取得元ページ <a href="https://www.t-solinx.co.jp/" target="_blank" rel="noopener">www.t-solinx.co.jp/</a></li>
+            <li>大阪エネルギーサービス株式会社：画像 <a href="http://oesdhc.jp/assets/img/common/ogp.png" target="_blank" rel="noopener">oesdhc.jp/assets/img/common/ogp.png</a>／取得元ページ <a href="http://oesdhc.jp/" target="_blank" rel="noopener">oesdhc.jp/</a></li>
+            <li>株式会社ジェイアール西日本デイリーサービスネット：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="http://www.dailyservice.co.jp/" target="_blank" rel="noopener">www.dailyservice.co.jp/</a></li>
+            <li>株式会社ジェイアール西日本フードサービスネット：画像 <a href="https://www.jwfsn.com/wp-content/themes/fcvanilla/img/top/slide01_n.jpg" target="_blank" rel="noopener">www.jwfsn.com/wp-content/themes/fcvanilla/img/top/slide01_n.jpg</a>／取得元ページ <a href="http://www.jwfsn.com/" target="_blank" rel="noopener">www.jwfsn.com/</a></li>
+            <li>株式会社ジェイアール西日本ファッショングッズ：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="https://www.jfg-inc.com/" target="_blank" rel="noopener">www.jfg-inc.com/</a></li>
+            <li>株式会社ジェイアールサービスネット金沢：画像 <a href="https://sn-kanazawa.net/wp-content/uploads/2025/07/6881df50dcbc7.jpg" target="_blank" rel="noopener">sn-kanazawa.net/wp-content/uploads/2025/07/6881df50dcbc7.jpg</a>／取得元ページ <a href="http://www.ekinaka-hokuriku.jp/" target="_blank" rel="noopener">www.ekinaka-hokuriku.jp/</a></li>
+            <li>株式会社ジェイアールサービスネット岡山：画像 <a href="https://sn-okayama.co.jp/wp-content/themes/okayama/assets/images/portal-hero-bg.png" target="_blank" rel="noopener">sn-okayama.co.jp/wp-content/themes/okayama/assets/images/portal-hero-bg.…</a>／取得元ページ <a href="http://www.jrsn-okayama.jp/company/" target="_blank" rel="noopener">www.jrsn-okayama.jp/company/</a></li>
+            <li>株式会社ジェイアールサービスネット広島：画像 <a href="https://www.sn-hiroshima.co.jp/files/site_config/capture.jpg" target="_blank" rel="noopener">www.sn-hiroshima.co.jp/files/site_config/capture.jpg</a>／取得元ページ <a href="http://www.sn-hiroshima.co.jp/" target="_blank" rel="noopener">www.sn-hiroshima.co.jp/</a></li>
+            <li>株式会社ジェイアールサービスネット福岡：画像 <a href="https://sn-fukuoka.com/files/site_config/capture.jpg" target="_blank" rel="noopener">sn-fukuoka.com/files/site_config/capture.jpg</a>／取得元ページ <a href="http://www.sn-fukuoka.com/" target="_blank" rel="noopener">www.sn-fukuoka.com/</a></li>
+            <li>株式会社JR西日本ヴィアイン：画像 <a href="https://www.viainn.com/files/images/home/bnr_vwo46_1.jpg" target="_blank" rel="noopener">www.viainn.com/files/images/home/bnr_vwo46_1.jpg</a>／取得元ページ <a href="https://www.viainn.com/" target="_blank" rel="noopener">www.viainn.com/</a></li>
+            <li>京都駅ビル開発株式会社：画像 <a href="https://www.kyoto-station-building.co.jp/app/themes/kyoto-station-building/common/images/ogp.jpg" target="_blank" rel="noopener">www.kyoto-station-building.co.jp/app/themes/kyoto-station-building/commo…</a>／取得元ページ <a href="https://www.kyoto-station-building.co.jp/" target="_blank" rel="noopener">www.kyoto-station-building.co.jp/</a></li>
+            <li>JR西日本ステーションシティ株式会社：画像 <a href="https://osakastationcity.com/common/img/thumb_fb.png" target="_blank" rel="noopener">osakastationcity.com/common/img/thumb_fb.png</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="http://osakastationcity.com/" target="_blank" rel="noopener">osakastationcity.com/</a></li>
+            <li>JR西日本不動産開発株式会社：画像 <a href="https://www.jrwd.co.jp/common/imgs/ogp.jpg" target="_blank" rel="noopener">www.jrwd.co.jp/common/imgs/ogp.jpg</a>／取得元ページ <a href="http://www.jrwd.co.jp/" target="_blank" rel="noopener">www.jrwd.co.jp/</a></li>
+            <li>JR西日本プロパティーズ株式会社：画像 <a href="https://www.jrwp.co.jp/assets/ogp/og_img.png" target="_blank" rel="noopener">www.jrwp.co.jp/assets/ogp/og_img.png</a>／取得元ページ <a href="http://www.jrwp.co.jp/" target="_blank" rel="noopener">www.jrwp.co.jp/</a></li>
+            <li>JR西日本不動産投資顧問株式会社：画像 <a href="https://jwestia.jp/assets/images/common/og.png" target="_blank" rel="noopener">jwestia.jp/assets/images/common/og.png</a>／取得元ページ <a href="https://jwestia.jp/" target="_blank" rel="noopener">jwestia.jp/</a></li>
+            <li>株式会社ジェイアール西日本伊勢丹：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="http://kyoto.wjr-isetan.co.jp/" target="_blank" rel="noopener">kyoto.wjr-isetan.co.jp/</a></li>
+            <li>富山ターミナルビル株式会社：画像 <a href="https://toyama-stationcity.jp/assets/img/top230602.jpg" target="_blank" rel="noopener">toyama-stationcity.jp/assets/img/top230602.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="https://toyama-stationcity.jp/" target="_blank" rel="noopener">toyama-stationcity.jp/</a></li>
+            <li>金沢ターミナル開発株式会社：画像 <a href="https://www.100bangai.co.jp/assets/img/ogp.jpg" target="_blank" rel="noopener">www.100bangai.co.jp/assets/img/ogp.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="http://www.100bangai.co.jp/" target="_blank" rel="noopener">www.100bangai.co.jp/</a></li>
+            <li>JR西日本京都SC開発株式会社：画像 <a href="https://www.porta.co.jp/common/img/ogp.jpg" target="_blank" rel="noopener">www.porta.co.jp/common/img/ogp.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="https://www.porta.co.jp/" target="_blank" rel="noopener">www.porta.co.jp/</a></li>
+            <li>株式会社新大阪ステーションストア：画像 <a href="https://www.arde-shinosaka.jp/common/img/ogp.jpg" target="_blank" rel="noopener">www.arde-shinosaka.jp/common/img/ogp.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="http://www.arde-shinosaka.jp/" target="_blank" rel="noopener">www.arde-shinosaka.jp/</a></li>
+            <li>JR西日本大阪開発株式会社：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="http://www.est-sc.com/index_1.html" target="_blank" rel="noopener">www.est-sc.com/index_1.html</a></li>
+            <li>JR西日本SC開発株式会社：画像 <a href="https://jrwsc.co.jp/common/img/top/mainVisual_img01_pc.jpg" target="_blank" rel="noopener">jrwsc.co.jp/common/img/top/mainVisual_img01_pc.jpg</a>／取得元ページ <a href="https://jrwsc.co.jp/" target="_blank" rel="noopener">jrwsc.co.jp/</a></li>
+            <li>株式会社和歌山ステーションビルディング：画像 <a href="https://www.wakayama-mio.co.jp/front/common/img/ogp.jpg" target="_blank" rel="noopener">www.wakayama-mio.co.jp/front/common/img/ogp.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="http://www.wakayama-mio.co.jp/" target="_blank" rel="noopener">www.wakayama-mio.co.jp/</a></li>
+            <li>JR西日本アーバン開発株式会社：画像 <a href="https://www.jrw-urban.co.jp/corporate/common/img/ogp.jpg" target="_blank" rel="noopener">www.jrw-urban.co.jp/corporate/common/img/ogp.jpg</a>／取得元ページ <a href="https://www.jrw-urban.co.jp/" target="_blank" rel="noopener">www.jrw-urban.co.jp/</a></li>
+            <li>山陽SC開発株式会社：画像 <a href="https://sun-ste.com/okayama-ichibangai/img/img-mv-pc.jpg" target="_blank" rel="noopener">sun-ste.com/okayama-ichibangai/img/img-mv-pc.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="https://sun-ste.com/okayama-ichibangai/" target="_blank" rel="noopener">sun-ste.com/okayama-ichibangai/</a></li>
+            <li>JR西日本山陰開発株式会社：画像 <a href="https://www.wjrsd.co.jp/images/home/mission_image_01.webp" target="_blank" rel="noopener">www.wjrsd.co.jp/images/home/mission_image_01.webp</a>／取得元ページ <a href="http://www.wjrsd.co.jp/" target="_blank" rel="noopener">www.wjrsd.co.jp/</a></li>
+            <li>中国SC開発株式会社：画像 <a href="https://www.minamoa-ekie.jp/assets/images/ogp.png" target="_blank" rel="noopener">www.minamoa-ekie.jp/assets/images/ogp.png</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="https://www.minamoa-ekie.jp/" target="_blank" rel="noopener">www.minamoa-ekie.jp/</a></li>
+            <li>株式会社JR西日本ホテルズ：画像 <a href="https://jrwest-hotels.jp/ogp.jpg" target="_blank" rel="noopener">jrwest-hotels.jp/ogp.jpg</a>／取得元ページ <a href="https://jrwest-hotels.jp/" target="_blank" rel="noopener">jrwest-hotels.jp/</a></li>
+            <li>和歌山ターミナルビル株式会社：画像 <a href="https://www.granvia-wakayama.co.jp/ogp.jpg" target="_blank" rel="noopener">www.granvia-wakayama.co.jp/ogp.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="http://www.granvia-wakayama.co.jp/" target="_blank" rel="noopener">www.granvia-wakayama.co.jp/</a></li>
+            <li>株式会社JR西日本ホロニック：画像 <a href="https://www.potel.jp/kyoto/ogp.jpg" target="_blank" rel="noopener">www.potel.jp/kyoto/ogp.jpg</a>（会社HPがなく、運営施設サイトの画像）／取得元ページ <a href="https://www.potel.jp/kyoto/" target="_blank" rel="noopener">www.potel.jp/kyoto/</a></li>
+            <li>株式会社JR西日本コミュニケーションズ：画像 <a href="https://www.jcomm.co.jp/wp/wp-content/uploads/2026/03/OGP_blue.jpg" target="_blank" rel="noopener">www.jcomm.co.jp/wp/wp-content/uploads/2026/03/OGP_blue.jpg</a>／取得元ページ <a href="http://www.jcomm.co.jp/" target="_blank" rel="noopener">www.jcomm.co.jp/</a></li>
+            <li>株式会社JR西日本あいウィル：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="http://www.jrw-iwill.co.jp/" target="_blank" rel="noopener">www.jrw-iwill.co.jp/</a></li>
+            <li>株式会社JR西日本交通サービス：画像 <a href="https://www.jk-nishiko.jp/site-icons/ogp.png" target="_blank" rel="noopener">www.jk-nishiko.jp/site-icons/ogp.png</a>／取得元ページ <a href="https://jk-nishiko.jp/" target="_blank" rel="noopener">jk-nishiko.jp/</a></li>
+            <li>株式会社JR西日本中国交通サービス：画像 <a href="https://cjk-nishiko.co.jp/img/top/img-kv-01.jpg" target="_blank" rel="noopener">cjk-nishiko.co.jp/img/top/img-kv-01.jpg</a>／取得元ページ <a href="https://cjk-nishiko.co.jp/" target="_blank" rel="noopener">cjk-nishiko.co.jp/</a></li>
+            <li>株式会社JR西日本メンテック：画像 <a href="https://j-maintec.co.jp/wp-content/themes/maintec1.9/images/ogp_imgg.jpg" target="_blank" rel="noopener">j-maintec.co.jp/wp-content/themes/maintec1.9/images/ogp_imgg.jpg</a>／取得元ページ <a href="https://j-maintec.co.jp/" target="_blank" rel="noopener">j-maintec.co.jp/</a></li>
+            <li>株式会社JR西日本金沢メンテック：画像 <a href="http://westjr-k-maintec.co.jp/wordpress/wp-content/uploads/2026/09/image_top-recruit.png" target="_blank" rel="noopener">westjr-k-maintec.co.jp/wordpress/wp-content/uploads/2026/09/image_top-re…</a>／取得元ページ <a href="http://www.westjr-k-maintec.co.jp/" target="_blank" rel="noopener">www.westjr-k-maintec.co.jp/</a></li>
+            <li>株式会社JR西日本中国メンテック：画像 <a href="https://www.j-c-maintec.co.jp/wordpress/wp-content/themes/j-c-maintec/ogimage.png" target="_blank" rel="noopener">www.j-c-maintec.co.jp/wordpress/wp-content/themes/j-c-maintec/ogimage.pn…</a>／取得元ページ <a href="https://j-c-maintec.co.jp/" target="_blank" rel="noopener">j-c-maintec.co.jp/</a></li>
+            <li>株式会社日本旅行：画像 <a href="https://www.nta.co.jp/images/ogp_top.jpg" target="_blank" rel="noopener">www.nta.co.jp/images/ogp_top.jpg</a>／取得元ページ <a href="http://www.nta.co.jp/" target="_blank" rel="noopener">www.nta.co.jp/</a></li>
+            <li>西日本ジェイアールバス株式会社：画像 <a href="http://www.nishinihonjrbus.co.jp/upload/visual/image/saiyo202604.jpg" target="_blank" rel="noopener">www.nishinihonjrbus.co.jp/upload/visual/image/saiyo202604.jpg</a>／取得元ページ <a href="http://www.nishinihonjrbus.co.jp/" target="_blank" rel="noopener">www.nishinihonjrbus.co.jp/</a></li>
+            <li>JRバス中国株式会社：画像 <a href="http://www.chugoku-jrbus.co.jp/common/img/thumb_fb.png" target="_blank" rel="noopener">www.chugoku-jrbus.co.jp/common/img/thumb_fb.png</a>／取得元ページ <a href="http://www.chugoku-jrbus.co.jp/" target="_blank" rel="noopener">www.chugoku-jrbus.co.jp/</a></li>
+            <li>嵯峨野観光鉄道株式会社：画像 <a href="http://www.sagano-kanko.co.jp/cms/wp-content/themes/saganokanko/assets/img/top_gallery01.webp" target="_blank" rel="noopener">www.sagano-kanko.co.jp/cms/wp-content/themes/saganokanko/assets/img/top_…</a>／取得元ページ <a href="http://www.sagano-kanko.co.jp/" target="_blank" rel="noopener">www.sagano-kanko.co.jp/</a></li>
+            <li>JR西日本レンタカー&amp;リース株式会社：画像 <a href="https://www.ekiren.com/data/images/home/home_sld_main_55.png?2026/11/1116:06:22" target="_blank" rel="noopener">www.ekiren.com/data/images/home/home_sld_main_55.png?2026/11/1116:06:22</a>／取得元ページ <a href="http://www.ekiren.com/" target="_blank" rel="noopener">www.ekiren.com/</a></li>
+            <li>JR西日本宮島フェリー株式会社：画像 <a href="https://jr-miyajimaferry.co.jp/wp-content/themes/jr-miyajimaferry.co.jp/images/topbn_point_2026_pc@2x.jpg" target="_blank" rel="noopener">jr-miyajimaferry.co.jp/wp-content/themes/jr-miyajimaferry.co.jp/images/t…</a>／取得元ページ <a href="http://www.jr-miyajimaferry.co.jp/" target="_blank" rel="noopener">www.jr-miyajimaferry.co.jp/</a></li>
+            <li>株式会社JR西日本カスタマーリレーションズ：画像なし（公式サイトのトップ画像を取得できなかったため、表では分野名のプレースホルダーを表示）／取得元ページ <a href="http://jw-cr.co.jp/" target="_blank" rel="noopener">jw-cr.co.jp/</a></li>
+            <li>株式会社JR西日本テクノス：画像 <a href="http://www.wjrtechnos.co.jp/img/himejiImg.jpg" target="_blank" rel="noopener">www.wjrtechnos.co.jp/img/himejiImg.jpg</a>／取得元ページ <a href="http://www.wjrtechnos.co.jp/" target="_blank" rel="noopener">www.wjrtechnos.co.jp/</a></li>
+            <li>株式会社JR西日本新幹線テクノス：画像 <a href="https://www.wjrs-tech.co.jp/wp-content/themes/wjrs-tech/images/mv.jpg" target="_blank" rel="noopener">www.wjrs-tech.co.jp/wp-content/themes/wjrs-tech/images/mv.jpg</a>／取得元ページ <a href="http://www.wjrs-tech.co.jp/" target="_blank" rel="noopener">www.wjrs-tech.co.jp/</a></li>
+            <li>株式会社JR西日本後藤テック：画像 <a href="https://wjr-gototech.co.jp/bdflashinfo/thumbnail-large.png" target="_blank" rel="noopener">wjr-gototech.co.jp/bdflashinfo/thumbnail-large.png</a>／取得元ページ <a href="https://wjr-gototech.co.jp/" target="_blank" rel="noopener">wjr-gototech.co.jp/</a></li>
+            <li>株式会社JR西日本テクシア：画像 <a href="https://www.techsia.co.jp/assets/img/top/mv01_pc.jpg" target="_blank" rel="noopener">www.techsia.co.jp/assets/img/top/mv01_pc.jpg</a>／取得元ページ <a href="http://www.techsia.co.jp/" target="_blank" rel="noopener">www.techsia.co.jp/</a></li>
+            <li>大鉄工業株式会社：画像 <a href="https://www.daitetsu.co.jp/assets/img/meta/ogp.png" target="_blank" rel="noopener">www.daitetsu.co.jp/assets/img/meta/ogp.png</a>／取得元ページ <a href="http://www.daitetsu.co.jp/" target="_blank" rel="noopener">www.daitetsu.co.jp/</a></li>
+            <li>広成建設株式会社：画像 <a href="https://www.koseikensetsu.co.jp/upload/save/page/bb354bb64c8700a2114f2d1f1fe454dc.jpg" target="_blank" rel="noopener">www.koseikensetsu.co.jp/upload/save/page/bb354bb64c8700a2114f2d1f1fe454d…</a>／取得元ページ <a href="http://www.koseikensetsu.co.jp/" target="_blank" rel="noopener">www.koseikensetsu.co.jp/</a></li>
+            <li>株式会社JR西日本レールテック：画像 <a href="https://www.railtec.jp/common/images/top/mv.jpg" target="_blank" rel="noopener">www.railtec.jp/common/images/top/mv.jpg</a>／取得元ページ <a href="http://www.railtec.jp/" target="_blank" rel="noopener">www.railtec.jp/</a></li>
+            <li>株式会社ジェイアール西日本ビルト：画像 <a href="https://www.jrw-built.co.jp/assets/images/top/mv_img_cover_01.webp" target="_blank" rel="noopener">www.jrw-built.co.jp/assets/images/top/mv_img_cover_01.webp</a>／取得元ページ <a href="http://www.jrw-built.co.jp/" target="_blank" rel="noopener">www.jrw-built.co.jp/</a></li>
+            <li>ジェイアール西日本コンサルタンツ株式会社：画像 <a href="https://www.jrnc.co.jp/assets/img/bnr/bnr_img13.png?v1.1" target="_blank" rel="noopener">www.jrnc.co.jp/assets/img/bnr/bnr_img13.png?v1.1</a>／取得元ページ <a href="http://www.jrnc.co.jp/" target="_blank" rel="noopener">www.jrnc.co.jp/</a></li>
+            <li>ジェイアール西日本商事株式会社：画像 <a href="https://www.jrw-syoji.co.jp/wp-content/themes/jr-west-trading/assets/img/common/ogp.png" target="_blank" rel="noopener">www.jrw-syoji.co.jp/wp-content/themes/jr-west-trading/assets/img/common/…</a>／取得元ページ <a href="http://www.jrwtrading.jp/" target="_blank" rel="noopener">www.jrwtrading.jp/</a></li>
+            <li>株式会社ジェイアール西日本マルニックス：画像 <a href="https://jrwmarunix.com/img/home/business-recycle.jpg" target="_blank" rel="noopener">jrwmarunix.com/img/home/business-recycle.jpg</a>／取得元ページ <a href="https://jrwmarunix.com/" target="_blank" rel="noopener">jrwmarunix.com/</a></li>
+            <li>JR西日本フィナンシャルマネジメント株式会社：画像 <a href="https://www.jwfm.co.jp/img/og_image.png" target="_blank" rel="noopener">www.jwfm.co.jp/img/og_image.png</a>／取得元ページ <a href="http://www.jwfm.co.jp/index.html" target="_blank" rel="noopener">www.jwfm.co.jp/index.html</a></li>
+            <li>株式会社JR西日本イノベーションズ：画像 <a href="https://www.jrw-inv.co.jp//wp-content/uploads/2025/10/b1-2.png" target="_blank" rel="noopener">www.jrw-inv.co.jp//wp-content/uploads/2025/10/b1-2.png</a>／取得元ページ <a href="http://www.jrw-inv.co.jp/" target="_blank" rel="noopener">www.jrw-inv.co.jp/</a></li>
+            <li>株式会社ジェイアール西日本総合ビルサービス：画像 <a href="https://www.jr-bs.co.jp/_cms/wp-content/themes/jr-bs/img/top/business.webp" target="_blank" rel="noopener">www.jr-bs.co.jp/_cms/wp-content/themes/jr-bs/img/top/business.webp</a>／取得元ページ <a href="http://www.jr-bs.co.jp/" target="_blank" rel="noopener">www.jr-bs.co.jp/</a></li>
+            <li>株式会社JR西日本ITソリューションズ：画像 <a href="https://www.j-wits.co.jp/assets/images/common/ogp.jpg" target="_blank" rel="noopener">www.j-wits.co.jp/assets/images/common/ogp.jpg</a>／取得元ページ <a href="http://www.j-wits.co.jp/" target="_blank" rel="noopener">www.j-wits.co.jp/</a></li>
+            <li>株式会社TRAILBLAZER：画像 <a href="https://www.trail-blazer.co.jp/wordpress/wp-content/themes/trailblazer/assets/images/meta/og.png" target="_blank" rel="noopener">www.trail-blazer.co.jp/wordpress/wp-content/themes/trailblazer/assets/im…</a>／取得元ページ <a href="https://www.trail-blazer.co.jp/" target="_blank" rel="noopener">www.trail-blazer.co.jp/</a></li>
+            <li>株式会社ジェイアール西日本ウェルネット：画像 <a href="https://www.jrwelnet.co.jp/cmn/img/thumb_fb.png" target="_blank" rel="noopener">www.jrwelnet.co.jp/cmn/img/thumb_fb.png</a>／取得元ページ <a href="http://www.jrwelnet.co.jp/" target="_blank" rel="noopener">www.jrwelnet.co.jp/</a></li>
+          </ul>
+        </details>
+      </section>
+    </div>
+
+
+    <script>
+    var JOBS = ["電気","車両・機械","土木・建築","運輸・駅営業","接客・販売・飲食","ホテル","旅行","広告・印刷","IT・情報処理","事務・営業・企画","ビル管理・清掃","不動産","商事・物流","財務・金融","製造","コンサルタント","コールセンター","福利厚生・その他サービス"];
+    var ELECSUBS = ["電車線","変電","信号","通信・光ネットワーク","電気計器・製造","電力・電気設備","電気工事・施工"];
+    // elec: "core"=電気が中核, "rel"=電気関連業務あり, ""=なし / basis: "recruit"=採用情報で確認, "biz"=事業内容からの分類
+    // hol: null=公開情報なし, or {d:日数, note, src, srcName}
+    var C = [
+    {n:"西日本旅客鉄道株式会社（JR西日本）",parent:true,cat:"鉄道（グループ本体）",biz:"山陽・北陸新幹線と近畿・中国・北陸・九州北部の在来線を運行する鉄道会社。駅業務・運転・車両・土木・建築・電気システムなど鉄道インフラ全体を担い、グループの中核です。",hp:"https://www.westjr.co.jp/",tags:["電気","車両・機械","土木・建築","運輸・駅営業","事務・営業・企画","IT・情報処理"],elec:"core",esubs:["電車線","変電","信号","通信・光ネットワーク","電力・電気設備"],basis:"recruit",must:"",rec:"電気系は第二種・第一種電気工事士、電気工事施工管理技士、第三種電気主任技術者。技術系全体では土木・建築施工管理技士、機械保全技能士など（いずれも職種により異なる）",hol:{d:119,note:"公式募集要項（2026年3月1日現在）。職種・勤務地により勤務形態は異なる",src:"https://www.westjr.co.jp/company/recruit/fresh/recruitinfo/kosen.html",srcName:"公式・高専卒募集要項"}},
+    {n:"JR西日本電気システム株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"鉄道電気設備の新設・改良工事を設計から施工管理まで担う総合電気工事会社（通称NESCO）。鉄道電気は電車線・電灯電力・変電・信号・通信の5系統に分かれ、駅ビルなど一般建築の電気設備工事も行います。",hp:"https://www.j-nesco.com/",tags:["電気","土木・建築","事務・営業・企画"],elec:"core",esubs:["電車線","変電","信号","通信・光ネットワーク","電力・電気設備","電気工事・施工"],basis:"recruit",must:"",rec:"第一種・第二種電気工事士、1級・2級電気工事施工管理技士、第三種電気主任技術者、普通自動車免許",hol:null},
+    {n:"JR西日本電気テック株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"鉄道電気設備の検査・修繕・工事を担う電気設備保全会社（e-TEC）。電力部門（電車線・電灯電力・変電）と信号通信部門（信号・通信）のメンテナンスで安全安定輸送を支え、技術提供・コンサルティングも行います。",hp:"http://www.wj-etec.co.jp/index.html",tags:["電気"],elec:"core",esubs:["電車線","変電","信号","通信・光ネットワーク","電力・電気設備","電気工事・施工"],basis:"recruit",must:"",rec:"第二種・第一種電気工事士、第三種電気主任技術者、電気工事施工管理技士、陸上特殊無線技士（通信系）、普通自動車免許",hol:null},
+    {n:"NESCO電車線工事株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"電車に電気を供給する架線設備（トロリ線・ちょう架線・き電線や支持物など）＝電車線設備の工事を専門とする、NESCOグループの会社です。",hp:"https://www.wj-nden.com/",tags:["電気"],elec:"core",esubs:["電車線","電気工事・施工"],basis:"biz",must:"",rec:"第二種・第一種電気工事士、電気工事施工管理技士、普通自動車免許。高所での作業が多い分野です",hol:null},
+    {n:"NESCO変電システム株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"新幹線・在来線沿線の変電所設備（変圧器・整流器・開閉器・保護装置など）の工事とメンテナンスを専門とし、鉄道への安定した電力供給を支える会社です。",hp:"https://www.nesco-hs.co.jp/",tags:["電気"],elec:"core",esubs:["変電","電気工事・施工"],basis:"recruit",must:"",rec:"第三種電気主任技術者、第一種・第二種電気工事士、電気工事施工管理技士、普通自動車免許",hol:null},
+    {n:"NESCO信号工事株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"列車の安全運行を制御する信号設備（信号装置・転てつ装置・踏切保安装置・ATSなど）の工事を専門とする、NESCOグループの会社です。",hp:"https://wj-nsignal.com/",tags:["電気"],elec:"core",esubs:["信号","電気工事・施工"],basis:"biz",must:"",rec:"第二種・第一種電気工事士、電気工事施工管理技士、陸上特殊無線技士、普通自動車免許",hol:null},
+    {n:"JR西日本光ネットワーク株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"山陽新幹線・在来線沿線に敷設された鉄道用光ファイバを活用し、光ファイバ芯線の貸与やイーサネット専用線などの通信回線サービスを事業者向けに提供する電気通信事業者（JRWON）です。",hp:"https://jrw-hikari.net/",tags:["電気","IT・情報処理","事務・営業・企画"],elec:"core",esubs:["通信・光ネットワーク"],basis:"biz",must:"",rec:"電気通信主任技術者、工事担任者（総合通信）、陸上特殊無線技士、基本情報技術者",hol:null},
+    {n:"津田電気計器株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"電力量計をはじめとする電気計器・計測機器の設計・製造・販売を行うメーカー。鉄道や電力分野で使われる精密な計測機器を手がけます。",hp:"http://www.tsuda-em.co.jp/",tags:["電気","製造"],elec:"core",esubs:["電気計器・製造"],basis:"biz",must:"",rec:"第二種電気工事士、第三種電気主任技術者、計測・電子回路の知識。製造現場では電気機器組立て等の技能",hol:null},
+    {n:"T-SoLinx株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"信号保安装置（連動装置・運行管理システム・転てつ関連機器・踏切関連機器）や旅客案内表示システムなどの鉄道電気用品を開発・製造・販売し、設備工事・修繕まで手がけるメーカー系企業です（旧・てつでん）。",hp:"https://www.t-solinx.co.jp/",tags:["電気","製造","IT・情報処理"],elec:"core",esubs:["信号","電気計器・製造","通信・光ネットワーク"],basis:"biz",must:"",rec:"第二種電気工事士、基本情報技術者（表示システム等のソフト開発）、第三種電気主任技術者、電気工事施工管理技士（工事系）",hol:null},
+    {n:"大阪エネルギーサービス株式会社",cat:"情報処理・エネルギー供給",biz:"大阪ステーションシティなど大規模施設へ冷温水・蒸気・電気などを供給する地域冷暖房（エネルギー供給）事業者。プラントの運転・保守管理を行います。",hp:"http://oesdhc.jp/",tags:["電気","ビル管理・清掃"],elec:"core",esubs:["電力・電気設備"],basis:"biz",must:"",rec:"第三種電気主任技術者、ボイラー・タービン主任技術者、エネルギー管理士、管工事施工管理技士",hol:null},
+    {n:"株式会社ジェイアール西日本デイリーサービスネット",cat:"物販・飲食・宿泊特化型ホテル",biz:"近畿エリアの駅ナカ店舗を統括する物販・飲食の中核会社。セブン-イレブン（ハートイン／キヨスク）、DELI CAFE、おみやげ店「おみやげ街道」「アントレマルシェ」、エキマルシェなどを企画・開発・運営します。",hp:"http://www.dailyservice.co.jp/",tags:["接客・販売・飲食","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、日商簿記、普通自動車免許。店舗運営・バイヤー・店舗開発などの職種があります",hol:null},
+    {n:"株式会社ジェイアール西日本フードサービスネット",cat:"物販・飲食・宿泊特化型ホテル",biz:"駅ナカ・駅周辺の飲食店舗（麺・カフェ・居酒屋など多業態）の企画・運営を行う飲食専門会社。店舗運営からメニュー開発・店舗開発まで担います。",hp:"http://www.jwfsn.com/",tags:["接客・販売・飲食","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"調理師、栄養士・管理栄養士、食品衛生責任者",hol:null},
+    {n:"株式会社ジェイアール西日本ファッショングッズ",cat:"物販・飲食・宿泊特化型ホテル",biz:"駅ナカのファッション雑貨・服飾雑貨店舗の企画・運営会社。バッグ・アクセサリー・コスメなどの専門店を駅ビルや駅構内で展開します。",hp:"https://www.jfg-inc.com/",tags:["接客・販売・飲食","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、色彩検定などファッション販売に役立つ資格",hol:null},
+    {n:"株式会社ジェイアールサービスネット金沢",cat:"物販・飲食・宿泊特化型ホテル",biz:"北陸エリアの駅ナカ物販・飲食店舗（コンビニ、おみやげ店など）を運営する会社。金沢駅など北陸の主要駅で店舗を展開します。",hp:"http://www.ekinaka-hokuriku.jp/",tags:["接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、食品衛生責任者（飲食店舗）",hol:null},
+    {n:"株式会社ジェイアールサービスネット岡山",cat:"物販・飲食・宿泊特化型ホテル",biz:"岡山エリアの駅ナカ物販・飲食店舗（コンビニ、おみやげ店、飲食店）を運営する会社です。",hp:"http://www.jrsn-okayama.jp/company/",tags:["接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、食品衛生責任者（飲食店舗）",hol:null},
+    {n:"株式会社ジェイアールサービスネット広島",cat:"物販・飲食・宿泊特化型ホテル",biz:"広島エリアの駅ナカ物販・飲食店舗（コンビニ、おみやげ店、飲食店）を運営する会社です。",hp:"http://www.sn-hiroshima.co.jp/",tags:["接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、食品衛生責任者（飲食店舗）",hol:null},
+    {n:"株式会社ジェイアールサービスネット福岡",cat:"物販・飲食・宿泊特化型ホテル",biz:"福岡エリア（博多駅など）の駅ナカ物販・飲食店舗を運営する会社です。",hp:"http://www.sn-fukuoka.com/",tags:["接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、食品衛生責任者（飲食店舗）",hol:null},
+    {n:"株式会社JR西日本ヴィアイン",cat:"物販・飲食・宿泊特化型ホテル",biz:"宿泊特化型ホテル「ヴィアイン」を全国主要都市で展開・運営。「MY HOME HOTEL.」をコンセプトに、駅から徒歩5分圏内の立地と朝食に強みを持ちます。フロント業務は24時間シフト制です。",hp:"https://www.viainn.com/",tags:["ホテル","接客・販売・飲食"],elec:"",esubs:[],basis:"recruit",must:"",rec:"ホテルビジネス実務検定、語学（TOEIC・英検など）。接客経験が活きる職場です",hol:{d:114,note:"シフト制（月9〜10日休）。同社公式採用ページの正社員募集要項の数値",src:"https://hrmos.co/pages/hotel-viainn/jobs/2067420910215802882",srcName:"同社公式採用ページ"}},
+    {n:"京都駅ビル開発株式会社",cat:"不動産",biz:"京都駅ビルの開発・運営会社。駅ビル内の商業施設や「京都劇場」などの文化施設を運営し、京都の玄関口の顔づくりを担います。",hp:"https://www.kyoto-station-building.co.jp/",tags:["不動産","ビル管理・清掃","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"宅地建物取引士、ビル経営管理士、消防設備士（設備管理系）",hol:null},
+    {n:"JR西日本ステーションシティ株式会社",cat:"不動産",biz:"大阪駅の「大阪ステーションシティ」の運営会社。サウスゲートビルディング・ノースゲートビルディング等の商業・オフィス・シネマなど大規模複合施設を運営します。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"大阪ステーションシティ",fachp:"http://osakastationcity.com/",tags:["不動産","ビル管理・清掃","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"宅地建物取引士、ビル経営管理士",hol:null},
+    {n:"JR西日本不動産開発株式会社",cat:"不動産",biz:"JR西日本100%出資の総合デベロッパー。駅ビル・高架下商業施設「ビエラ」、分譲マンション「J.GRAN」シリーズ、オフィス・ホテル開発、鉄道用地の資産管理まで幅広く手がけます。",hp:"http://www.jrwd.co.jp/",tags:["不動産","土木・建築","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"宅地建物取引士、一級・二級建築士、建築・土木施工管理技士、日商簿記（経理系）",hol:null},
+    {n:"JR西日本プロパティーズ株式会社",cat:"不動産",biz:"分譲マンション・賃貸住宅などの住宅事業を担う不動産会社。JR西日本沿線を中心に住まいの開発・販売・賃貸を行います。",hp:"http://www.jrwp.co.jp/",tags:["不動産","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"宅地建物取引士、賃貸不動産経営管理士、管理業務主任者",hol:null},
+    {n:"JR西日本不動産投資顧問株式会社",cat:"不動産",biz:"不動産ファンド・私募REIT等の運用（アセットマネジメント）を行う投資顧問会社。JR西日本グループの不動産金融事業を担います。",hp:"https://jwestia.jp/",tags:["不動産","財務・金融","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"宅地建物取引士、不動産鑑定士、証券アナリスト、日商簿記",hol:null},
+    {n:"株式会社ジェイアール西日本伊勢丹",cat:"百貨店",biz:"JR西日本と三越伊勢丹の共同出資による百貨店会社。「ジェイアール京都伊勢丹」（京都駅直結）と大阪・ルクア内のイセタン各ショップを運営します。",hp:"http://kyoto.wjr-isetan.co.jp/",tags:["接客・販売・飲食","事務・営業・企画"],elec:"",esubs:[],basis:"recruit",must:"",rec:"販売士、接客・ファッション関連の知識。バイヤー・販売・営業企画などの職種があります",hol:{d:116,note:"週休2日制（交替制）、有給休暇を除く。同社公式採用情報・新卒募集要項の数値",src:"https://www.mistore.jp/store/kyoto/recruit/sougou.html",srcName:"同社公式採用情報"}},
+    {n:"富山ターミナルビル株式会社",cat:"駅ビル・ショッピングセンター",biz:"富山駅の駅ビル・商業施設「MAROOT（マルート）」「マリエとやま」「とやマルシェ」などを運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"富山ステーションシティ",fachp:"https://toyama-stationcity.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"金沢ターミナル開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"金沢駅の商業施設「金沢百番街」（あんと・トレーン・Rinto）を運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"金沢百番街",fachp:"http://www.100bangai.co.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"JR西日本京都SC開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"京都駅の地下街・商業施設「京都ポルタ」を運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"京都ポルタ",fachp:"https://www.porta.co.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"株式会社新大阪ステーションストア",cat:"駅ビル・ショッピングセンター",biz:"新大阪駅の商業施設「アルデ新大阪」を運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"アルデ新大阪",fachp:"http://www.arde-shinosaka.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"JR西日本大阪開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"「エスト」（梅田）、「吹田グリーンプレイス」「うめきたグリーンプレイス」「ALBi住道」など、駅周辺の商業施設を開発・運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"エスト",fachp:"http://www.est-sc.com/index_1.html",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"JR西日本SC開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"「ルクア大阪」「天王寺ミオ」など大型駅ビル・ショッピングセンターを運営するSC運営会社です。",hp:"https://jrwsc.co.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士、ビル経営管理士",hol:null},
+    {n:"株式会社和歌山ステーションビルディング",cat:"駅ビル・ショッピングセンター",biz:"和歌山駅の商業施設「和歌山ミオ」を運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"和歌山ミオ",fachp:"http://www.wakayama-mio.co.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"JR西日本アーバン開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"沿線の駅前商業施設「グリーンプレイス」「プリコ」「ピオレ」シリーズなど多数のSCを開発・運営する会社です。",hp:"https://www.jrw-urban.co.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士、ビル経営管理士",hol:null},
+    {n:"山陽SC開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"「岡山一番街・さんすて岡山」「さんすて倉敷」「さんすて福山」など山陽エリアの駅ビル・地下街を運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"さんすて",fachp:"https://sun-ste.com/okayama-ichibangai/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"JR西日本山陰開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"「シャミネ松江」「シャミネ鳥取」など山陰エリアの駅ビル・商業施設を運営する会社です。",hp:"http://www.wjrsd.co.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"中国SC開発株式会社",cat:"駅ビル・ショッピングセンター",biz:"広島駅の「ミナモア・エキエ」や呉駅ビル「クレスト」など中国エリアの駅ビル・商業施設を運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"ミナモア・エキエ",fachp:"https://www.minamoa-ekie.jp/",tags:["接客・販売・飲食","ビル管理・清掃","不動産"],elec:"",esubs:[],basis:"biz",must:"",rec:"販売士、宅地建物取引士（施設運営・リーシング系）",hol:null},
+    {n:"株式会社JR西日本ホテルズ",cat:"ホテル",biz:"ホテルグランヴィア（京都・大阪・岡山・広島など）、ホテルヴィスキオ、THE OSAKA STATION HOTEL、奈良ホテルを運営するホテル運営会社。宿泊・料飲・宴会・婚礼サービスを提供します。",hp:"https://jrwest-hotels.jp/",tags:["ホテル","接客・販売・飲食"],elec:"",esubs:[],basis:"recruit",must:"",rec:"調理職は調理師、サービス職はホテルビジネス実務検定・ソムリエ・語学（TOEIC等）が役立ちます",hol:{d:116,note:"シフト制（月9〜10日休）。数値は奈良ホテルの中途採用（契約社員）募集要項のもので、勤務先・雇用形態により異なる場合があります",src:"https://jrwest-hotels.jp/narahotel/recruit/recruit_career/",srcName:"公式・奈良ホテル募集要項"}},
+    {n:"和歌山ターミナルビル株式会社",cat:"ホテル",biz:"「ホテルグランヴィア和歌山」（和歌山駅直結）を運営する会社です。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"ホテルグランヴィア和歌山",fachp:"http://www.granvia-wakayama.co.jp/",tags:["ホテル","接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"調理師（調理職）、ホテルビジネス実務検定、語学",hol:null},
+    {n:"株式会社JR西日本ホロニック",cat:"ホテル",biz:"京都・梅小路の「梅小路ポテル京都」を運営するホテル会社。地域とつながる滞在体験をコンセプトとします。",hp:"",hpn:"会社HPのリンクなし（施設サイトのみ）",fac:"梅小路ポテル京都",fachp:"https://www.potel.jp/kyoto/",tags:["ホテル","接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"ホテルビジネス実務検定、語学、調理師（調理職）",hol:null},
+    {n:"株式会社JR西日本コミュニケーションズ",cat:"広告・印刷",biz:"JR西日本グループの広告会社。駅・車両媒体の広告販売、各種プロモーション・イベント・広告制作を手がけます。",hp:"http://www.jcomm.co.jp/",tags:["広告・印刷","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"特定資格より広告・販促の実務経験や企画力が重視される分野。普通自動車免許（営業職）",hol:null},
+    {n:"株式会社JR西日本あいウィル",cat:"広告・印刷",biz:"JR西日本の特例子会社。印刷・製本、清掃、事務サポートなど多様な業務で、障がいのある社員の雇用と活躍を推進する会社です。",hp:"http://www.jrw-iwill.co.jp/",tags:["広告・印刷","ビル管理・清掃","福利厚生・その他サービス"],elec:"",esubs:[],basis:"biz",must:"",rec:"業務により異なる（印刷・清掃・事務など配属分野の技能）",hol:null},
+    {n:"株式会社JR西日本交通サービス",cat:"運輸・営業",biz:"近畿エリアを中心に、駅業務の受託やバス・旅行関連など交通サービス事業を行う会社です。",hp:"https://jk-nishiko.jp/",tags:["運輸・駅営業","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"普通自動車免許。駅業務では接客経験が活きます",hol:null},
+    {n:"株式会社JR西日本中国交通サービス",cat:"運輸・営業",biz:"中国エリアで駅業務の受託など交通サービス事業を行う会社です。",hp:"https://cjk-nishiko.co.jp/",tags:["運輸・駅営業","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"普通自動車免許。駅業務では接客経験が活きます",hol:null},
+    {n:"株式会社JR西日本メンテック",cat:"運輸・営業",biz:"駅・車両の清掃整備を担う会社（近畿エリア）。列車の清掃・整備や駅構内の美化を通じて、快適な鉄道利用を支えます。",hp:"https://j-maintec.co.jp/",tags:["ビル管理・清掃","運輸・駅営業"],elec:"",esubs:[],basis:"biz",must:"",rec:"普通自動車免許、ビルクリーニング技能士（清掃系）",hol:null},
+    {n:"株式会社JR西日本金沢メンテック",cat:"運輸・営業",biz:"北陸エリアで駅・車両の清掃整備を行う会社です。",hp:"http://www.westjr-k-maintec.co.jp/",tags:["ビル管理・清掃","運輸・駅営業"],elec:"",esubs:[],basis:"biz",must:"",rec:"普通自動車免許、ビルクリーニング技能士（清掃系）",hol:null},
+    {n:"株式会社JR西日本中国メンテック",cat:"運輸・営業",biz:"中国エリアで駅・車両の清掃整備を行う会社です。",hp:"https://j-c-maintec.co.jp/",tags:["ビル管理・清掃","運輸・駅営業"],elec:"",esubs:[],basis:"biz",must:"",rec:"普通自動車免許、ビルクリーニング技能士（清掃系）",hol:null},
+    {n:"株式会社日本旅行",cat:"旅行",biz:"日本最古の旅行会社の一つ。個人旅行（赤い風船など）から法人・教育旅行、MICE、地域創生ソリューションまで幅広く手がける総合旅行会社です。",hp:"http://www.nta.co.jp/",tags:["旅行","事務・営業・企画","接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"総合旅行業務取扱管理者、国内旅行業務取扱管理者、語学（TOEIC等）",hol:null},
+    {n:"西日本ジェイアールバス株式会社",cat:"運輸・運輸関連サービス",biz:"近畿・北陸エリアの高速バス・路線バスを運行するバス会社。運転士・整備士・運行管理などの職種があります。",hp:"http://www.nishinihonjrbus.co.jp/",tags:["運輸・駅営業","車両・機械"],elec:"",esubs:[],basis:"biz",must:"運転士として乗務するには大型自動車第二種免許が必要（取得支援の有無は各募集要項で確認）",rec:"運行管理者、自動車整備士（二級ガソリン・ジーゼル等／整備職）",hol:null},
+    {n:"JRバス中国株式会社",cat:"運輸・運輸関連サービス",biz:"中国エリアの高速バス・路線バスを運行するバス会社です。",hp:"http://www.chugoku-jrbus.co.jp/",tags:["運輸・駅営業","車両・機械"],elec:"",esubs:[],basis:"biz",must:"運転士として乗務するには大型自動車第二種免許が必要（取得支援の有無は各募集要項で確認）",rec:"運行管理者、自動車整備士（整備職）",hol:null},
+    {n:"嵯峨野観光鉄道株式会社",cat:"運輸・運輸関連サービス",biz:"嵯峨野トロッコ列車（嵯峨駅〜亀岡駅、保津川渓谷沿い）を運行する観光鉄道会社です。",hp:"http://www.sagano-kanko.co.jp/",tags:["運輸・駅営業","接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"運転士の免許（動力車操縦者）は入社後の養成が一般的。接客・観光案内の経験が活きます",hol:null},
+    {n:"JR西日本レンタカー&リース株式会社",cat:"運輸・運輸関連サービス",biz:"駅レンタカー事業とカーリース事業を行う会社。主要駅の営業所でレンタカーの貸出・返却や車両管理を行います。",hp:"http://www.ekiren.com/",tags:["運輸・駅営業","事務・営業・企画","接客・販売・飲食"],elec:"",esubs:[],basis:"biz",must:"",rec:"普通自動車免許（店舗業務で必要になる場合が多い）、自動車整備士（整備系）",hol:null},
+    {n:"JR西日本宮島フェリー株式会社",cat:"運輸・運輸関連サービス",biz:"宮島口〜宮島（厳島）を結ぶフェリーを運航する船舶会社。世界遺産・厳島神社へのアクセスを担います。",hp:"http://www.jr-miyajimaferry.co.jp/",tags:["運輸・駅営業"],elec:"",esubs:[],basis:"biz",must:"乗組員職は職務に応じた海技士免許等が必要（詳細は募集要項で確認）",rec:"小型船舶操縦士、海技士（航海・機関）",hol:null},
+    {n:"株式会社JR西日本カスタマーリレーションズ",cat:"コールセンター運営",biz:"JR西日本の電話窓口（お客様センター等）の運営を受託するコールセンター運営会社です。",hp:"http://jw-cr.co.jp/",tags:["コールセンター","運輸・駅営業"],elec:"",esubs:[],basis:"biz",must:"",rec:"特定資格より電話応対・PC操作のスキル。コンタクトセンター関連の検定",hol:null},
+    {n:"株式会社JR西日本テクノス",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"在来線車両の改造・メンテナンスや車両部品の製造・修理を行う車両技術会社です。",hp:"http://www.wjrtechnos.co.jp/",tags:["車両・機械","製造"],elec:"",esubs:[],basis:"biz",must:"",rec:"機械保全技能士、電気工事士（車両電気系）、溶接技能者",hol:null},
+    {n:"株式会社JR西日本新幹線テクノス",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"山陽新幹線車両のメンテナンス・改造や部品修理を行う新幹線車両技術会社です。",hp:"http://www.wjrs-tech.co.jp/",tags:["車両・機械","製造"],elec:"",esubs:[],basis:"biz",must:"",rec:"機械保全技能士、電気工事士（車両電気系）、溶接技能者",hol:null},
+    {n:"株式会社JR西日本後藤テック",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"鉄道車両関連機器の製造・メンテナンスを行う会社（後藤工業の流れをくむ車両機器メーカー系）です。",hp:"https://wjr-gototech.co.jp/",tags:["車両・機械","製造"],elec:"",esubs:[],basis:"biz",must:"",rec:"機械保全技能士、電気機器組立て技能士、溶接技能者",hol:null},
+    {n:"株式会社JR西日本テクシア",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"車両・機械設備分野の技術サービス（保守・エンジニアリング）を行う会社です。",hp:"http://www.techsia.co.jp/",tags:["車両・機械"],elec:"",esubs:[],basis:"biz",must:"",rec:"機械保全技能士、電気工事士、機械・電気系の施工管理技士",hol:null},
+    {n:"大鉄工業株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"JR西日本グループの総合建設会社。鉄道関連施設（線路・駅・高架橋など）や公共工事、マンション・商業施設等の土木・建築工事の施工管理を行います。",hp:"http://www.daitetsu.co.jp/",tags:["土木・建築","事務・営業・企画"],elec:"rel",esubs:["電気工事・施工"],basis:"biz",must:"",rec:"1級・2級土木施工管理技士、建築施工管理技士、一級・二級建築士。設備・電気工事部門では電気工事施工管理技士",hol:null},
+    {n:"広成建設株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"中国エリアを地盤とする総合建設会社。鉄道関連工事や公共土木・建築工事の施工を行います。",hp:"http://www.koseikensetsu.co.jp/",tags:["土木・建築"],elec:"",esubs:[],basis:"biz",must:"",rec:"土木施工管理技士、建築施工管理技士、一級・二級建築士",hol:null},
+    {n:"株式会社JR西日本レールテック",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"線路（軌道）の保守・工事やレール関連技術を担う会社。軌道の検査・修繕で安全な列車運行を支えます。",hp:"http://www.railtec.jp/",tags:["土木・建築","車両・機械"],elec:"",esubs:[],basis:"biz",must:"",rec:"土木施工管理技士、測量士・測量士補、普通自動車免許",hol:null},
+    {n:"株式会社ジェイアール西日本ビルト",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"駅舎・駅ビルなどの建築工事（新築・改修・保守）を行う建築専門会社。建築設備（電気・空調・衛生）の工事も含みます。",hp:"http://www.jrw-built.co.jp/",tags:["土木・建築","電気"],elec:"rel",esubs:["電気工事・施工","電力・電気設備"],basis:"biz",must:"",rec:"建築施工管理技士、一級・二級建築士。設備系では電気工事施工管理技士、管工事施工管理技士、電気工事士",hol:null},
+    {n:"ジェイアール西日本コンサルタンツ株式会社",cat:"車両・機械・土木・建築・電気・コンサルタント",biz:"鉄道・道路・まちづくり分野の調査・計画・設計を行う建設コンサルタント。土木・建築・電気設備等の設計業務も手がけます。",hp:"http://www.jrnc.co.jp/",tags:["コンサルタント","土木・建築","電気"],elec:"rel",esubs:["電力・電気設備"],basis:"biz",must:"",rec:"技術士、RCCM、土木施工管理技士、測量士。電気設備設計では電気主任技術者・電気工事施工管理技士",hol:null},
+    {n:"ジェイアール西日本商事株式会社",cat:"商事・物流",biz:"JR西日本グループの商社。鉄道資材・設備機器の調達・販売や、グループ各社向けの物品販売などを行います。",hp:"http://www.jrwtrading.jp/",tags:["商事・物流","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"日商簿記、貿易実務検定（輸出入業務がある場合）、普通自動車免許（営業職）",hol:null},
+    {n:"株式会社ジェイアール西日本マルニックス",cat:"商事・物流",biz:"JR西日本グループの物流・サービス会社。グループ向けの物流や各種サポート業務を行います。",hp:"https://jrwmarunix.com/",tags:["商事・物流","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"フォークリフト運転技能講習、普通・中型自動車免許（物流系）、日商簿記（事務系）",hol:null},
+    {n:"JR西日本フィナンシャルマネジメント株式会社",cat:"財務",biz:"JR西日本グループの財務機能を担う会社。グループ資金の管理・運用や財務関連業務を行います。",hp:"http://www.jwfm.co.jp/index.html",tags:["財務・金融","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"日商簿記（2級以上）、ファイナンシャル・プランナー、証券アナリスト",hol:null},
+    {n:"株式会社JR西日本イノベーションズ",cat:"コーポレートベンチャーキャピタル",biz:"JR西日本のコーポレートベンチャーキャピタル。スタートアップへの投資と事業共創を通じて、グループの新規事業創出を担います。",hp:"http://www.jrw-inv.co.jp/",tags:["財務・金融","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"日商簿記、中小企業診断士、証券アナリストなど投資・財務の知識",hol:null},
+    {n:"株式会社ジェイアール西日本総合ビルサービス",cat:"ビルマネジメント",biz:"駅ビル・オフィスビル等の建物総合管理（設備管理・清掃・警備のマネジメント）を行うビルメンテナンス会社です。",hp:"http://www.jr-bs.co.jp/",tags:["ビル管理・清掃","電気"],elec:"rel",esubs:["電力・電気設備"],basis:"biz",must:"",rec:"第三種電気主任技術者、建築物環境衛生管理技術者、消防設備士、ビルクリーニング技能士",hol:null},
+    {n:"株式会社JR西日本ITソリューションズ",cat:"情報処理・エネルギー供給",biz:"JR西日本グループのIT戦略会社。e5489・モバイルICOCA・tabiwaなどの旅客サービスシステムから、列車運行・車両・電気設備等の業務システムまで、企画・開発・保守・運用を担います。",hp:"http://www.j-wits.co.jp/",tags:["IT・情報処理","事務・営業・企画"],elec:"rel",esubs:["通信・光ネットワーク"],basis:"biz",must:"",rec:"基本情報技術者、応用情報技術者、ネットワークスペシャリスト等の情報処理技術者試験",hol:null},
+    {n:"株式会社TRAILBLAZER",cat:"DXコンサルティング",biz:"JR西日本グループのDXコンサルティング会社。データ活用やデジタル技術による業務変革・新規事業の支援を行います。",hp:"https://www.trail-blazer.co.jp/",tags:["IT・情報処理","コンサルタント","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"基本情報技術者、応用情報技術者、データサイエンティスト関連の知識・資格",hol:null},
+    {n:"株式会社ジェイアール西日本ウェルネット",cat:"福利厚生",biz:"JR西日本グループ社員向け福利厚生サービスの運営や、グループの福利厚生業務を支援する会社です。",hp:"http://www.jrwelnet.co.jp/",tags:["福利厚生・その他サービス","事務・営業・企画"],elec:"",esubs:[],basis:"biz",must:"",rec:"日商簿記、社会保険労務士（人事・厚生系業務）、普通自動車免許",hol:null}
+    ];
+
+    // ---- company top-image thumbnails: external references to each official site (no image data is embedded in this page) ----
+    var IMG = {"0": "https://www.westjr.co.jp/assets/images/og.jpg", "2": "https://www.wj-etec.co.jp/ogp.png", "4": "https://www.nesco-hs.co.jp/assets/img/top-1.jpg", "6": "https://www.jrw-hikari.net/img/ogp.jpg", "7": "https://www.tsuda-em.co.jp/assets/img/common/ogp.jpg", "8": "https://www.t-solinx.co.jp/wp-content/themes/t-solinx/images/top/kv/01.jpg", "9": "http://oesdhc.jp/assets/img/common/ogp.png", "11": "https://www.jwfsn.com/wp-content/themes/fcvanilla/img/top/slide01_n.jpg", "13": "https://sn-kanazawa.net/wp-content/uploads/2025/07/6881df50dcbc7.jpg", "14": "https://sn-okayama.co.jp/wp-content/themes/okayama/assets/images/portal-hero-bg.png", "15": "https://www.sn-hiroshima.co.jp/files/site_config/capture.jpg", "16": "https://sn-fukuoka.com/files/site_config/capture.jpg", "17": "https://www.viainn.com/files/images/home/bnr_vwo46_1.jpg", "18": "https://www.kyoto-station-building.co.jp/app/themes/kyoto-station-building/common/images/ogp.jpg", "19": "https://osakastationcity.com/common/img/thumb_fb.png", "20": "https://www.jrwd.co.jp/common/imgs/ogp.jpg", "21": "https://www.jrwp.co.jp/assets/ogp/og_img.png", "22": "https://jwestia.jp/assets/images/common/og.png", "24": "https://toyama-stationcity.jp/assets/img/top230602.jpg", "25": "https://www.100bangai.co.jp/assets/img/ogp.jpg", "26": "https://www.porta.co.jp/common/img/ogp.jpg", "27": "https://www.arde-shinosaka.jp/common/img/ogp.jpg", "29": "https://jrwsc.co.jp/common/img/top/mainVisual_img01_pc.jpg", "30": "https://www.wakayama-mio.co.jp/front/common/img/ogp.jpg", "31": "https://www.jrw-urban.co.jp/corporate/common/img/ogp.jpg", "32": "https://sun-ste.com/okayama-ichibangai/img/img-mv-pc.jpg", "33": "https://www.wjrsd.co.jp/images/home/mission_image_01.webp", "34": "https://www.minamoa-ekie.jp/assets/images/ogp.png", "35": "https://jrwest-hotels.jp/ogp.jpg", "36": "https://www.granvia-wakayama.co.jp/ogp.jpg", "37": "https://www.potel.jp/kyoto/ogp.jpg", "38": "https://www.jcomm.co.jp/wp/wp-content/uploads/2026/03/OGP_blue.jpg", "40": "https://www.jk-nishiko.jp/site-icons/ogp.png", "41": "https://cjk-nishiko.co.jp/img/top/img-kv-01.jpg", "42": "https://j-maintec.co.jp/wp-content/themes/maintec1.9/images/ogp_imgg.jpg", "43": "http://westjr-k-maintec.co.jp/wordpress/wp-content/uploads/2026/09/image_top-recruit.png", "44": "https://www.j-c-maintec.co.jp/wordpress/wp-content/themes/j-c-maintec/ogimage.png", "45": "https://www.nta.co.jp/images/ogp_top.jpg", "46": "http://www.nishinihonjrbus.co.jp/upload/visual/image/saiyo202604.jpg", "47": "http://www.chugoku-jrbus.co.jp/common/img/thumb_fb.png", "48": "http://www.sagano-kanko.co.jp/cms/wp-content/themes/saganokanko/assets/img/top_gallery01.webp", "49": "https://www.ekiren.com/data/images/home/home_sld_main_55.png?2026/11/1116:06:22", "50": "https://jr-miyajimaferry.co.jp/wp-content/themes/jr-miyajimaferry.co.jp/images/topbn_point_2026_pc@2x.jpg", "52": "http://www.wjrtechnos.co.jp/img/himejiImg.jpg", "53": "https://www.wjrs-tech.co.jp/wp-content/themes/wjrs-tech/images/mv.jpg", "54": "https://wjr-gototech.co.jp/bdflashinfo/thumbnail-large.png", "55": "https://www.techsia.co.jp/assets/img/top/mv01_pc.jpg", "56": "https://www.daitetsu.co.jp/assets/img/meta/ogp.png", "57": "https://www.koseikensetsu.co.jp/upload/save/page/bb354bb64c8700a2114f2d1f1fe454dc.jpg", "58": "https://www.railtec.jp/common/images/top/mv.jpg", "59": "https://www.jrw-built.co.jp/assets/images/top/mv_img_cover_01.webp", "60": "https://www.jrnc.co.jp/assets/img/bnr/bnr_img13.png?v1.1", "61": "https://www.jrw-syoji.co.jp/wp-content/themes/jr-west-trading/assets/img/common/ogp.png", "62": "https://jrwmarunix.com/img/home/business-recycle.jpg", "63": "https://www.jwfm.co.jp/img/og_image.png", "64": "https://www.jrw-inv.co.jp//wp-content/uploads/2025/10/b1-2.png", "65": "https://www.jr-bs.co.jp/_cms/wp-content/themes/jr-bs/img/top/business.webp", "66": "https://www.j-wits.co.jp/assets/images/common/ogp.jpg", "67": "https://www.trail-blazer.co.jp/wordpress/wp-content/themes/trailblazer/assets/images/meta/og.png", "68": "https://www.jrwelnet.co.jp/cmn/img/thumb_fb.png"};
+    var IMGF = {"19": 1, "24": 1, "25": 1, "26": 1, "27": 1, "30": 1, "32": 1, "34": 1, "36": 1, "37": 1};
+    function thumbFor(c, i){
+      var link = c.hp || c.fachp || "";
+      var cap = IMGF[i] ? '<span class="thumb-cap">施設サイトの画像</span>' : '';
+      var fb = '<span class="thumb-fallback"><span class="tf-cat">' + esc(c.cat) + '</span><span class="tf-note">画像を読み込めませんでした</span></span>';
+      if (IMG[i]){
+        var inner = '<img loading="lazy" decoding="async" referrerpolicy="no-referrer" width="480" height="270" src="' + esc(IMG[i]) + '" alt="' + esc(c.n) + 'のホームページのトップ画像" onerror="this.classList.add(\'imgerr\');">' + fb + cap;
+        return link ? '<a class="thumb" href="' + esc(link) + '" target="_blank" rel="noopener">' + inner + '</a>' : '<span class="thumb">' + inner + '</span>';
+      }
+      return '<span class="thumb thumb-none"><span class="tf-cat">' + esc(c.cat) + '</span><span class="tf-note">公式サイトのトップ画像は取得できませんでした</span></span>';
+    }
+
+    var SPOT = [
+      {i:1,sub:"電気工事・施工の総合会社",note:"鉄道電気の設計〜施工管理。電車線・電灯電力・変電・信号・通信の5系統"},
+      {i:2,sub:"電気設備の保全（検査・修繕）",note:"電力部門（電車線・電灯電力・変電）と信号通信部門のメンテナンス"},
+      {i:3,sub:"電車線",note:"架線設備（トロリ線・ちょう架線・き電線）の工事専門"},
+      {i:4,sub:"変電",note:"新幹線・在来線の変電所設備の工事・メンテナンス専門"},
+      {i:5,sub:"信号",note:"信号装置・転てつ装置・踏切保安装置・ATS等の工事専門"},
+      {i:6,sub:"通信・光ネットワーク",note:"鉄道用光ファイバの芯線貸与・専用線サービスを提供する電気通信事業者"},
+      {i:7,sub:"電気計器・製造",note:"電力量計など電気計器・計測機器の設計・製造・販売メーカー"},
+      {i:8,sub:"信号・電気計器・製造",note:"連動装置・運行管理システム・旅客案内表示などの鉄道電気用品メーカー"},
+      {i:9,sub:"電力・エネルギー供給",note:"大規模施設への冷温水・蒸気・電気の供給プラントを運転・保守"},
+      {i:0,sub:"鉄道本体の電気職",note:"JR西日本本体にも電気システム職（電車線・変電・信号通信の計画・保守）があります"}
+    ];
+
+    // ---- briefing data (verified 2026-11-11) ----
+    // FES participants: name substrings matching the official special page's 24-company list
+    var FESKEYS = ["西日本旅客鉄道","デイリーサービスネット","フードサービスネット","JR西日本SC開発","アーバン開発","JR西日本メンテック","金沢メンテック","中国メンテック","JR西日本テクノス","レールテック","大鉄工業","広成建設","テクシア","JR西日本電気システム","JR西日本電気テック","T-SoLinx","カスタマーリレーションズ","マルニックス","コミュニケーションズ","総合ビルサービス","西日本ジェイアールバス","ウェルネット","あいウィル","コンサルタンツ"];
+    var FES_URL = "https://idc.career-tasu.jp/jrwestfes/autumn/";
+    function isFes(c){ return FESKEYS.some(function(k){ return c.n.indexOf(k)>=0; }); }
+    // Individual briefings confirmed on official recruiting flows / official seminar listings (Mynavi pages operated for each company)
+    var EV = [
+      {k:"西日本旅客鉄道", t:"本体のセミナー／インターンシップ情報は公式「セミナー情報」ページで随時案内しています（グループ合同セミナーの主催社でもあります）", u:"https://www.westjr.co.jp/company/recruit/fresh/seminar/", un:"公式・セミナー情報"},
+      {k:"JR西日本電気システム", t:"会社説明会を対面／WEBで実施（同社採用フロー）。日程は随時更新されるため申込ページで確認してください", u:"https://job.mynavi.jp/27/pc/search/corp92163/recruiting_course27049513/recruiting_course.html", un:"マイナビ2027・同社採用フロー"},
+      {k:"JR西日本電気テック", t:"会社説明会をWEBで実施（同社採用フロー。参加は必須ではない旨も案内されています）。日程は申込ページで随時確認", u:"https://job.mynavi.jp/27/pc/search/corp94703/recruiting_course27001136/recruiting_course.html", un:"マイナビ2027・同社採用フロー"},
+      {k:"JR西日本ホテルズ", t:"会社説明会を対面／WEBで実施（採用フロー）。オープン・カンパニーや館内見学付き説明会も案内されています。日程は申込ページで確認", u:"https://job.mynavi.jp/28/pc/corpinfo/displayPrevEmployment/index/?corpId=56730&recruitingCourseId=27023800", un:"マイナビ・同社採用フロー"},
+      {k:"フードサービスネット", t:"パーサー職の会社説明会を対面（大阪・岡山・広島・福岡）とWEBで実施。日程は随時更新されます（11月初旬掲載の日程は終了済み）。最新日程は申込ページで確認", u:"https://job.mynavi.jp/27/pc/corpinfo/displaySeminar/index/?optNo=qDxmvC&corpId=222156", un:"マイナビ2027・同社セミナー／説明会"},
+      {k:"テクシア", t:"WEBオンライン説明会（10月〜2月・月1回程度）と対面1DAY仕事体験を案内。日程は申込ページで確認", u:"https://job.mynavi.jp/28/pc/corpinfo/displayInternship/index?optNo=MNijq&corpId=233109", un:"マイナビ・同社セミナー／説明会"},
+      {k:"JR西日本ヴィアイン", t:"説明会の予約案内あり。形式・日程は申込ページで確認してください", u:"https://job.mynavi.jp/27/pc/search/corp207692/outline.html", un:"マイナビ2027・同社ページ"},
+      {k:"大鉄工業", t:"セミナー／説明会欄に、線路・土木・建築の部門別1day仕事体験を掲載。日程は申込ページで確認", u:"https://job.mynavi.jp/28/pc/search/corp59305/is.html", un:"マイナビ・同社インターンシップ＆キャリア"},
+      {k:"サービスネット岡山", t:"個別会社説明会の掲載あり。日程・形式は申込ページで確認してください", u:"https://job.mynavi.jp/28/pc/corpinfo/displayInternship/index?corpId=229373&optNo=GaBX1", un:"マイナビ・同社ページ"}
+    ];
+    function evOf(c){ for (var i=0;i<EV.length;i++){ if (c.n.indexOf(EV[i].k)>=0) return EV[i]; } return null; }
+
+    var state = { job:"電気", esub:"", q:"", hol:false, hp:false, cat:"", ev:false };
+
+    function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+    // spotlight
+    var sg = document.getElementById("spotGrid");
+    sg.innerHTML = SPOT.map(function(s){
+      var c = C[s.i];
+      var name = c.hp ? '<a href="'+esc(c.hp)+'" target="_blank" rel="noopener">'+esc(c.n)+'</a>' : esc(c.n);
+      return '<div class="spot-card">' + thumbFor(c, s.i) + '<p class="sub">'+esc(s.sub)+'</p><h3>'+name+'</h3><p>'+esc(s.note)+'</p></div>';
+    }).join("");
+
+    // job chips
+    var jc = document.getElementById("jobChips");
+    var allBtn = document.createElement("button");
+    allBtn.className = "chip"; allBtn.type = "button"; allBtn.textContent = "すべて表示";
+    allBtn.setAttribute("aria-pressed", state.job==="" ? "true":"false");
+    allBtn.addEventListener("click", function(){ state.job=""; state.esub=""; syncChips(); render(); });
+    jc.appendChild(allBtn);
+    JOBS.forEach(function(j){
+      var b = document.createElement("button");
+      b.className = "chip" + (j==="電気" ? " elec" : "");
+      b.type = "button"; b.textContent = (j==="電気" ? "⚡ 電気" : j);
+      b.dataset.job = j;
+      b.setAttribute("aria-pressed", state.job===j ? "true":"false");
+      b.addEventListener("click", function(){
+        state.job = (state.job===j) ? "" : j;
+        if (state.job!=="電気") state.esub="";
+        syncChips(); render();
+      });
+      jc.appendChild(b);
+    });
+    // elec sub chips
+    var ec = document.getElementById("elecChips");
+    ELECSUBS.forEach(function(s){
+      var b = document.createElement("button");
+      b.className = "subchip"; b.type = "button"; b.textContent = s; b.dataset.esub = s;
+      b.setAttribute("aria-pressed","false");
+      b.addEventListener("click", function(){
+        state.esub = (state.esub===s) ? "" : s;
+        syncChips(); render();
+      });
+      ec.appendChild(b);
+    });
+    function syncChips(){
+      jc.querySelectorAll(".chip").forEach(function(b){
+        if (b.dataset.job) b.setAttribute("aria-pressed", state.job===b.dataset.job ? "true":"false");
+        else b.setAttribute("aria-pressed", state.job==="" ? "true":"false");
+      });
+      ec.querySelectorAll(".subchip").forEach(function(b){
+        b.setAttribute("aria-pressed", state.esub===b.dataset.esub ? "true":"false");
+      });
+      ec.classList.toggle("on", state.job==="電気");
+    }
+    // category select
+    var cats = [];
+    C.forEach(function(c){ if (cats.indexOf(c.cat)<0) cats.push(c.cat); });
+    var sel = document.getElementById("catSel");
+    cats.forEach(function(ct){
+      var o = document.createElement("option"); o.value = ct; o.textContent = ct; sel.appendChild(o);
+    });
+    sel.addEventListener("change", function(){ state.cat = sel.value; render(); });
+    document.getElementById("q").addEventListener("input", function(e){ state.q = e.target.value.trim(); render(); });
+    document.getElementById("holOnly").addEventListener("change", function(e){ state.hol = e.target.checked; render(); });
+    document.getElementById("hpOnly").addEventListener("change", function(e){ state.hp = e.target.checked; render(); });
+    document.getElementById("evOnly").addEventListener("change", function(e){ state.ev = e.target.checked; render(); });
+
+    function matches(c){
+      if (state.job){
+        if (state.job==="電気"){ if (!c.elec) return false; }
+        else if (c.tags.indexOf(state.job)<0) return false;
+      }
+      if (state.job==="電気" && state.esub && c.esubs.indexOf(state.esub)<0) return false;
+      if (state.cat && c.cat!==state.cat) return false;
+      if (state.hol && !c.hol) return false;
+      if (state.hp && !c.hp) return false;
+      if (state.ev && !isFes(c) && !evOf(c)) return false;
+      if (state.q){
+        var ev = evOf(c);
+        var hay = (c.n+" "+c.cat+" "+c.biz+" "+c.tags.join(" ")+" "+c.esubs.join(" ")+" "+(c.rec||"")+" "+(c.must||"")+" "+(isFes(c)?"合同セミナー WEST JAPAN RAILWAY FES":"")+" "+(ev?ev.t:"")).toLowerCase();
+        if (hay.indexOf(state.q.toLowerCase())<0) return false;
+      }
+      return true;
+    }
+    function rank(c){
+      if (c.elec==="core") return 0;
+      if (c.elec==="rel") return 1;
+      return 2;
+    }
+    function render(){
+      var list = C.filter(matches);
+      list.sort(function(a,b){ return rank(a)-rank(b); });
+      var tb = document.getElementById("tbody");
+      tb.innerHTML = list.map(function(c){
+        var ci = C.indexOf(c);
+        var badge = c.parent ? '<span class="parent-badge">本体</span>' : (c.elec==="core" ? '<span class="elec-badge">⚡電気</span>' : (c.elec==="rel" ? '<span class="rel-badge">電気関連</span>' : ''));
+        var tags = c.tags.map(function(t){
+          var isE = (t==="電気");
+          return '<span class="tag'+(isE?' e':'')+'">'+esc(t)+'</span>';
+        }).join("") + c.esubs.map(function(s){ return '<span class="tag e">'+esc(s)+'</span>'; }).join("");
+        var basis = c.basis==="recruit" ? "タグ根拠：公式採用情報で確認" : "タグ根拠：事業内容からの分類";
+        var qual = (c.must ? '<span class="qual-must"><b>必須：</b>'+esc(c.must)+'</span>' : '<span class="qual-must" style="color:var(--none)">必須：—（入社時に特定資格が必須と公式に確認できたものなし）</span>')
+          + '<span class="qual-rec"><b>あると有利・役立つ：</b>'+esc(c.rec)+'</span>';
+        var hol;
+        if (c.hol){
+          hol = '<span class="hol-num">'+c.hol.d+'<small> 日</small></span><span class="hol-note">'+esc(c.hol.note)+'</span><a class="hol-src" href="'+esc(c.hol.src)+'" target="_blank" rel="noopener">出典：'+esc(c.hol.srcName)+'</a>';
+        } else {
+          hol = '<span class="hol-none">公開情報なし</span><span class="hol-note">公式サイト・公式採用ページで年間休日の総日数を確認できませんでした（2026年11月11日確認）</span>';
+        }
+        var evHtml = "";
+        if (isFes(c)){
+          evHtml += '<span class="fes-badge">合同セミナー参加（11/22）</span><span class="ev-text">WEST JAPAN RAILWAY FES AUTUMN（11月22日(日)・大阪対面）。申込締切 11月20日(金)15:00</span><a class="ev-link" href="'+FES_URL+'" target="_blank" rel="noopener">公式特設ページ</a>';
+        }
+        var ev = evOf(c);
+        if (ev){
+          evHtml += (evHtml ? '<span class="ev-note" style="margin-top:6px"></span>' : '') + '<span class="ev-text">'+esc(ev.t)+'</span><a class="ev-link" href="'+esc(ev.u)+'" target="_blank" rel="noopener">申込・詳細：'+esc(ev.un)+'</a>';
+        }
+        if (!evHtml){
+          evHtml = '<span class="ev-none">説明会の公開情報なし</span><span class="ev-note">公式採用ページ等で個別説明会の案内を確認できませんでした（2026年11月11日確認）。最新の開催は各社採用ページでご確認ください</span>';
+        }
+        var hp;
+        if (c.hp){
+          hp = '<a class="hp-link" href="'+esc(c.hp)+'" target="_blank" rel="noopener">'+esc(c.hp.replace(/^https?:\/\//,"").replace(/\/$/,""))+'</a>';
+        } else {
+          hp = '<span class="hp-none">'+esc(c.hpn||"会社HPのリンクなし")+'</span>' + (c.fachp ? '<br><a class="hp-link" href="'+esc(c.fachp)+'" target="_blank" rel="noopener">施設：'+esc(c.fac)+'</a>' : '');
+        }
+        return '<tr class="'+(c.elec?'is-elec':'')+'">'
+          + '<td class="c-name">' + thumbFor(c, ci) + '<span class="cname">'+esc(c.n)+badge+'</span><div class="cat">'+esc(c.cat)+'</div></td>'
+          + '<td class="c-biz">'+esc(c.biz)+'</td>'
+          + '<td class="c-tags">'+tags+'<span class="basis">'+basis+'</span></td>'
+          + '<td class="c-qual">'+qual+'</td>'
+          + '<td class="c-ev">'+evHtml+'</td>'
+          + '<td class="c-hol">'+hol+'</td>'
+          + '<td class="c-hp">'+hp+'</td></tr>';
+      }).join("");
+      document.getElementById("empty").hidden = list.length>0;
+      document.getElementById("count").innerHTML = "<b>"+list.length+"</b> 社を表示中（全"+C.length+"社）";
+    }
+    syncChips();
+    render();
+
+    // ---- recommender (browser-only keyword matching; nothing is saved or sent) ----
+    var RECO_QUALS = ["第二種電気工事士","第一種電気工事士","第三種電気主任技術者","電気工事施工管理技士","工事担任者","電気通信主任技術者","陸上特殊無線技士","普通自動車免許","大型自動車第二種免許","宅地建物取引士","基本情報技術者","応用情報技術者","調理師","日商簿記","建築士","土木施工管理技士","建築施工管理技士","管工事施工管理技士","販売士","自動車整備士","運行管理者","技術士","測量士","エネルギー管理士","消防設備士"];
+    var RECO_PRI = [
+      {id:"hol", label:"年間休日が公式に分かっている会社"},
+      {id:"ev", label:"説明会・セミナー情報がある会社"},
+      {id:"fes", label:"合同セミナー（11/22）に参加する会社"},
+      {id:"core", label:"電気が中核の会社"},
+      {id:"hp", label:"会社ホームページがある会社"}
+    ];
+    var recoSel = { jobs:{}, quals:{}, pri:{} };
+    function buildRecoChips(boxId, items, store, prefix){
+      var box = document.getElementById(boxId);
+      items.forEach(function(it){
+        var label = (typeof it === "string") ? it : it.label;
+        var val = (typeof it === "string") ? it : (it.id || it.label);
+        var b = document.createElement("button");
+        b.className = "chip"; b.type = "button"; b.textContent = (prefix || "") + label;
+        b.setAttribute("aria-pressed","false");
+        b.addEventListener("click", function(){
+          store[val] = !store[val];
+          b.setAttribute("aria-pressed", store[val] ? "true" : "false");
+        });
+        box.appendChild(b);
+      });
+    }
+    buildRecoChips("recoJobs", ELECSUBS.map(function(s){ return {id:"esub:"+s, label:"電気："+s}; })
+      .concat(JOBS.filter(function(j){ return j!=="電気"; }).map(function(j){ return {id:"job:"+j, label:j}; })), recoSel.jobs, "");
+    buildRecoChips("recoQuals", RECO_QUALS, recoSel.quals, "");
+    buildRecoChips("recoPri", RECO_PRI, recoSel.pri, "");
+
+    // free-text synonym rules: [words in the text, electrical subfield or job tag it means]
+    var FREE_SYN = [
+      {w:["架線","トロリ","き電"], t:"esub:電車線", label:"電車線"},
+      {w:["変電所","変電"], t:"esub:変電", label:"変電"},
+      {w:["踏切","連動","転てつ"], t:"esub:信号", label:"信号"},
+      {w:["光ファイバ","光ネットワーク","通信回線"], t:"esub:通信・光ネットワーク", label:"通信・光ネットワーク"},
+      {w:["計器","メーター","計測"], t:"esub:電気計器・製造", label:"電気計器・製造"},
+      {w:["電気工事","配線","施工管理"], t:"esub:電気工事・施工", label:"電気工事・施工"},
+      {w:["ビル設備","電気設備","設備管理"], t:"esub:電力・電気設備", label:"電力・電気設備"}
+    ];
+    var FREE_BIZ = ["駅ビル","マンション","旅行","バス","フェリー","清掃","広告","物流","金融","ホテル","飲食","コンビニ","百貨店","新幹線","車両","線路","不動産","建設","製造","コールセンター","レンタカー","エネルギー","清掃整備"];
+
+    function scoreCompany(c, want){
+      var score = 0, reasons = [], used = {};
+      function addJob(key, label){
+        if (used[key]) return;
+        if (key.indexOf("esub:")===0){
+          var s = key.slice(5);
+          if (c.esubs.indexOf(s)>=0){ score += 4; reasons.push("職種（電気の細分）「"+label+"」に合致"); used[key]=1; }
+        } else {
+          var j = key.slice(4);
+          if (c.tags.indexOf(j)>=0){ score += 4; reasons.push("職種「"+label+"」に合致"); used[key]=1; }
+        }
+      }
+      want.jobs.forEach(function(k){ addJob(k, k.replace(/^(esub:|job:)/,"")); });
+      want.quals.forEach(function(q){
+        var inMust = c.must && c.must.indexOf(q)>=0;
+        var inRec = c.rec && c.rec.indexOf(q)>=0;
+        if (inMust){ score += 4; reasons.push("資格「"+q+"」がこの会社の必須資格に掲載されています"); }
+        else if (inRec){ score += 3; reasons.push("資格「"+q+"」が『あると有利・役立つ』資格に掲載されています"); }
+      });
+      want.pri.forEach(function(p){
+        if (p==="hol" && c.hol){ score += 3; reasons.push("年間休日 "+c.hol.d+"日（公式確認済み）"); }
+        if (p==="ev" && (evOf(c) || isFes(c))){ score += 3; reasons.push("説明会・セミナー情報があります"); }
+        if (p==="fes" && isFes(c)){ score += 3; reasons.push("合同セミナー（11月22日）に参加します"); }
+        if (p==="core" && c.elec==="core"){ score += 2; reasons.push("電気が中核の会社です"); }
+        if (p==="hp" && c.hp){ score += 1; reasons.push("会社ホームページがあります"); }
+      });
+      // free text
+      var txt = want.free;
+      if (txt){
+        ELECSUBS.forEach(function(s){ if (txt.indexOf(s)>=0) addJob("esub:"+s, s); });
+        JOBS.forEach(function(j){ if (j!=="電気" && txt.indexOf(j)>=0) addJob("job:"+j, j); });
+        FREE_SYN.forEach(function(r){ if (r.w.some(function(w){ return txt.indexOf(w)>=0; })) addJob(r.t, r.label); });
+        if (txt.indexOf("電気")>=0 && c.elec){ score += 2; reasons.push("自由記入の「電気」に合致（電気関係の会社）"); }
+        if (/(休み|休日|休暇)/.test(txt) && c.hol){ score += 3; reasons.push("年間休日 "+c.hol.d+"日（公式確認済み）で、休日を重視する希望に合致"); }
+        if (/(説明会|セミナー|合同)/.test(txt) && (evOf(c) || isFes(c))){ score += 3; reasons.push("説明会・セミナー情報があり、説明会を重視する希望に合致"); }
+        RECO_QUALS.forEach(function(q){ if (txt.indexOf(q)>=0){
+          if (c.must && c.must.indexOf(q)>=0){ score += 4; reasons.push("自由記入の資格「"+q+"」が必須資格に掲載"); }
+          else if (c.rec && c.rec.indexOf(q)>=0){ score += 3; reasons.push("自由記入の資格「"+q+"」が『あると有利』に掲載"); }
+        }});
+        var bizHits = 0;
+        FREE_BIZ.forEach(function(w){
+          if (bizHits < 2 && txt.indexOf(w)>=0 && c.biz.indexOf(w)>=0){ score += 2; bizHits++; reasons.push("自由記入の「"+w+"」が事業内容に合致"); }
+        });
+      }
+      return { c:c, score:score, reasons:reasons };
+    }
+
+    document.getElementById("recoBtn").addEventListener("click", function(){
+      var want = {
+        jobs: Object.keys(recoSel.jobs).filter(function(k){ return recoSel.jobs[k]; }),
+        quals: Object.keys(recoSel.quals).filter(function(k){ return recoSel.quals[k]; }),
+        pri: Object.keys(recoSel.pri).filter(function(k){ return recoSel.pri[k]; }),
+        free: document.getElementById("recoFree").value.trim()
+      };
+      var out = document.getElementById("recoOut");
+      if (!want.jobs.length && !want.quals.length && !want.pri.length && !want.free){
+        out.innerHTML = '<div class="reco-msg">まだ条件が選ばれていません。上の 1〜3 から気になる項目を選ぶか、4 の自由記入に希望を書いてから「おすすめを表示」を押してください（どれか1つだけでも使えます）。</div>';
+        return;
+      }
+      var scored = C.map(function(c, i){ var r = scoreCompany(c, want); r.i = i; return r; })
+        .filter(function(r){ return r.score > 0; })
+        .sort(function(a, b){ return (b.score - a.score) || (rank(a.c) - rank(b.c)) || (a.i - b.i); })
+        .slice(0, 5);
+      if (!scored.length){
+        out.innerHTML = '<div class="reco-msg">選んだ条件に合う会社が見つかりませんでした。条件を減らすか、自由記入の言葉を変えて（例：「電気」「ホテル」「休日」など）お試しください。</div>';
+        return;
+      }
+      out.innerHTML = '<div class="reco-results">' + scored.map(function(r, idx){
+        var c = r.c;
+        var name = c.hp ? '<a href="'+esc(c.hp)+'" target="_blank" rel="noopener">'+esc(c.n)+'</a>' : esc(c.n);
+        var badges = (c.elec==="core" ? ' <span class="elec-badge">⚡電気</span>' : (c.elec==="rel" ? ' <span class="rel-badge">電気関連</span>' : '')) + (isFes(c) ? ' <span class="fes-badge" style="margin:0 0 0 4px">合同セミナー参加</span>' : '');
+        return '<div class="reco-card">' + thumbFor(c, r.i) + '<h3>'+(idx+1)+'位：'+name+'<span class="matchn">合致 '+r.reasons.length+' 項目</span></h3>'
+          + '<p class="rcat">'+esc(c.cat)+badges+'</p>'
+          + '<ul>' + r.reasons.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("") + '</ul>'
+          + (c.hp ? '<a class="hp-link" href="'+esc(c.hp)+'" target="_blank" rel="noopener">ホームページを見る</a>' : '<span class="hp-none">'+esc(c.hpn||"会社HPのリンクなし")+'</span>')
+          + '</div>';
+      }).join("") + '</div>';
+    });
+    document.getElementById("recoClear").addEventListener("click", function(){
+      recoSel.jobs = {}; recoSel.quals = {}; recoSel.pri = {};
+      document.querySelectorAll("#recoJobs .chip, #recoQuals .chip, #recoPri .chip").forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      document.getElementById("recoFree").value = "";
+      document.getElementById("recoOut").innerHTML = "";
+    });
+    </script>
+  
+<div id="aikotobaGate" hidden>
+  <div class="gate-box">
+    <h1>合言葉を入力してください</h1>
+    <p>このページは、合言葉を知っている人だけに共有しているページです。合言葉を入力すると内容が表示されます。</p>
+    <div class="gate-row">
+      <input id="gateInput" type="text" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="合言葉" aria-label="合言葉" />
+      <button id="gateToggle" type="button">表示</button>
+    </div>
+    <button id="gateSubmit" type="button">開く</button>
+    <div id="gateError" role="alert"></div>
+    <p class="gate-note">※この合言葉は簡易的な表示ロックで、強いセキュリティではありません。</p>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "aikotoba-ok";
+  var unlocked = false;
+  try { unlocked = sessionStorage.getItem(KEY) === "1"; } catch (e) {}
+  if (unlocked) { document.documentElement.classList.remove("gate-locked"); return; }
+  var gate = document.getElementById("aikotobaGate");
+  if (!gate) return;
+  gate.hidden = false;
+  var input = document.getElementById("gateInput");
+  var toggle = document.getElementById("gateToggle");
+  var submit = document.getElementById("gateSubmit");
+  var error = document.getElementById("gateError");
+  var EXPECTED = String.fromCharCode(23601,32887,27963,21205,49,56,49,56);
+  var composing = false;
+  input.addEventListener("compositionstart", function () { composing = true; });
+  input.addEventListener("compositionend", function () { composing = false; });
+  toggle.addEventListener("click", function () {
+    if (input.style.webkitTextSecurity === "none") {
+      input.style.webkitTextSecurity = "disc"; toggle.textContent = "表示";
+    } else {
+      input.style.webkitTextSecurity = "none"; toggle.textContent = "隠す";
+    }
+    input.focus();
+  });
+  function normalize(s) {
+    return s.replace(/[\uFF01-\uFF5E]/g, function (ch) {
+      return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
+    }).replace(/\u3000/g, " ").trim();
+  }
+  function tryOpen() {
+    if (normalize(input.value) === EXPECTED) {
+      try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+      document.documentElement.classList.remove("gate-locked");
+      gate.remove();
+    } else {
+      error.textContent = "合言葉が違います。もう一度入力してください。";
+    }
+  }
+  submit.addEventListener("click", tryOpen);
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      if (composing || e.isComposing || e.keyCode === 229) { return; }
+      e.preventDefault(); tryOpen();
+    }
+  });
+  input.focus();
+})();
+</script>
+</body>
+</html>
