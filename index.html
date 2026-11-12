@@ -22,7 +22,7 @@
 <script>
   function gateUnlocked() {
     try { if (localStorage.getItem("aikotoba-ok") === "1") { return true; } } catch (e) {}
-    return /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || "");
+    try { return /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || ""); } catch (e) { return false; }
   }
   try {
     if (!gateUnlocked()) {
@@ -1937,7 +1937,7 @@
   var KEY = "aikotoba-ok";
   var unlocked = false;
   try { unlocked = localStorage.getItem(KEY) === "1"; } catch (e) {}
-  if (!unlocked) { unlocked = /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || ""); }
+  if (!unlocked) { try { unlocked = /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || ""); } catch (e) {} }
   if (unlocked) { document.documentElement.classList.remove("gate-locked"); return; }
   var gate = document.getElementById("aikotobaGate");
   if (!gate) return;
