@@ -210,6 +210,17 @@ try {
       .fes-companies span{ display:inline-block; background:var(--chip); border-radius:999px; padding:2px 9px; margin:0 4px 5px 0; font-size:12.5px; color:var(--ink); }
       .fes-companies span.e{ background:var(--amber-bg); border:1px solid var(--amber-line); font-weight:700; }
 
+      /* ---- job-hunting sites ---- */
+      .jobsites{ margin-top:20px; background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:16px 18px 18px; }
+      .jobsites h2{ margin:0 0 6px; font-size:19px; }
+      .jobsites > p{ margin:0; font-size:13.5px; color:var(--ink2); max-width:62em; }
+      .js-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:10px; margin-top:13px; }
+      .js-card{ border:1px solid var(--line); border-radius:8px; background:var(--surface2); padding:12px 14px; display:flex; flex-direction:column; gap:6px; }
+      .js-card h3{ margin:0; font-size:15.5px; }
+      .js-card p{ margin:0; font-size:13px; color:var(--ink2); flex:1; }
+      .js-card a{ display:inline-block; align-self:flex-start; padding:8px 13px; border-radius:8px; background:var(--blue); color:#fff; text-decoration:none; font-weight:700; font-size:13.5px; }
+      .job-link{ display:inline-block; margin-top:7px; padding:7px 10px; border:1px solid var(--blue); border-radius:8px; text-decoration:none; font-size:12.5px; font-weight:700; background:var(--blue-soft); color:var(--blue); white-space:normal; }
+
       /* ---- briefing cell ---- */
       td.c-ev{ min-width:180px; font-size:13.5px; }
       .fes-badge{ display:inline-block; font-size:11.5px; background:var(--blue); color:#fff; border-radius:4px; padding:2px 7px; font-weight:700; margin-bottom:4px; }
@@ -289,7 +300,7 @@ try {
         td.c-qual::before{ content:"資格（必須／あると有利）"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
         td.c-ev::before{ content:"説明会・セミナー"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
         td.c-hol::before{ content:"年間休日（公式確認分のみ）"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
-        td.c-hp::before{ content:"ホームページ"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
+        td.c-hp::before{ content:"ホームページ／就活サイトで探す"; display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:3px; }
         .controls{ position:static; }
       }
     </style>
@@ -326,6 +337,38 @@ try {
         <div class="fes-companies">
           <b>参加企業一覧（24社・公式特設ページより）</b>
           <span class="e">⚡西日本旅客鉄道（JR西日本）</span><span>ジェイアール西日本デイリーサービスネット</span><span>ジェイアール西日本フードサービスネット</span><span>JR西日本SC開発</span><span>JR西日本アーバン開発</span><span>JR西日本メンテック</span><span>JR西日本金沢メンテック</span><span>JR西日本中国メンテック</span><span>JR西日本テクノス</span><span>JR西日本レールテック</span><span>大鉄工業</span><span>広成建設</span><span class="e">⚡JR西日本テクシア</span><span class="e">⚡JR西日本電気システム</span><span class="e">⚡JR西日本電気テック</span><span class="e">⚡T-SoLinx</span><span>JR西日本カスタマーリレーションズ</span><span>ジェイアール西日本マルニックス</span><span>JR西日本コミュニケーションズ</span><span>ジェイアール西日本総合ビルサービス</span><span>西日本ジェイアールバス</span><span>ジェイアール西日本ウェルネット</span><span>JR西日本あいウィル</span><span>ジェイアール西日本コンサルタンツ</span>
+        </div>
+      </section>
+
+      <section class="jobsites" aria-labelledby="js-h">
+        <h2 id="js-h">就活サイトで探す・申し込む</h2>
+        <p>下の各社の求人・説明会情報は、就職情報サイトでも確認できます。いずれも学生は無料で利用できます。リンク先は各サービスの公式サイトで、ログインや会員登録は各公式サイトで直接行ってください（このページがログイン情報を扱うことはありません）。また、表の各社の行にある「就活サイトで探す（マイナビ）」からは、その会社名でマイナビを直接検索できます。</p>
+        <div class="js-grid">
+          <div class="js-card">
+            <h3>マイナビ</h3>
+            <p>登録企業数・学生数が日本最大級の就職情報サイト。求人数が多く、説明会の情報も豊富です。まず登録する定番の1つです。</p>
+            <a href="http://job.mynavi.jp/" target="_blank" rel="noopener">公式サイトを開く</a>
+          </div>
+          <div class="js-card">
+            <h3>リクナビ</h3>
+            <p>もう1つの大手就職情報サイト。応募の締め切りをカレンダーで確認できるのが便利です。</p>
+            <a href="https://job.rikunabi.com/" target="_blank" rel="noopener">公式サイトを開く</a>
+          </div>
+          <div class="js-card">
+            <h3>キャリタス就活</h3>
+            <p>JR西日本グループ合同セミナー「WEST JAPAN RAILWAY FES」の申込もキャリタス経由です。就活アドバイザーに相談できる「あんしん相談」もあります。</p>
+            <a href="https://job.career-tasu.jp/" target="_blank" rel="noopener">公式サイトを開く</a>
+          </div>
+          <div class="js-card">
+            <h3>OfferBox</h3>
+            <p>プロフィールを登録しておくと、企業からオファー（スカウト）が届く「逆求人」型のサービス。自分から探すだけでは見つからない会社と出会えます。</p>
+            <a href="https://offerbox.jp/" target="_blank" rel="noopener">公式サイトを開く</a>
+          </div>
+          <div class="js-card">
+            <h3>ONE CAREER（ワンキャリア）</h3>
+            <p>先輩の選考体験談やエントリーシートの例がたくさん見られる就活サイト。企業研究や面接対策に役立ちます。</p>
+            <a href="https://www.onecareer.jp/" target="_blank" rel="noopener">公式サイトを開く</a>
+          </div>
         </div>
       </section>
 
@@ -399,7 +442,7 @@ try {
               <th scope="col">資格（必須／あると有利）</th>
               <th scope="col">説明会・セミナー</th>
               <th scope="col">年間休日</th>
-              <th scope="col">ホームページ</th>
+              <th scope="col">ホームページ／就活サイトで探す</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
@@ -1484,6 +1527,7 @@ try {
           <li>資格ガイドの試験日程：電気工事士・電気主任技術者＝<a href="https://www.shiken.or.jp/construction/second/" target="_blank" rel="noopener">電気技術者試験センター</a>（令和9年度日程は同センターの実施日程PDF）／ 電気工事施工管理技士＝<a href="https://www.fcip-shiken.jp/den2/index.html" target="_blank" rel="noopener">建設業振興基金 試験申込システム</a>／ 工事担任者・電気通信主任技術者＝日本データ通信協会および総務省掲載の公示／ 第一級陸上特殊無線技士＝<a href="https://www.nichimu.or.jp/kshiken/" target="_blank" rel="noopener">日本無線協会</a>／ 宅地建物取引士＝<a href="https://www.retio.or.jp/exam/schedule/" target="_blank" rel="noopener">不動産適正取引推進機構</a>／ 基本情報技術者＝<a href="https://www.ipa.go.jp/shiken/kubun/fe.html" target="_blank" rel="noopener">IPA</a>／ 日商簿記＝日本商工会議所・各地商工会議所／ 調理師＝各都道府県の試験案内（いずれも2026年11月11日確認）。</li>
           <li>資格ガイド（建設・不動産・運輸・金融・旅行ほか）の試験日程：土木・管工事施工管理技士＝全国建設研修センター、建築施工管理技士＝建設業振興基金（いずれも国土交通省の技術検定実施計画で確認）／ 建築士＝建築技術教育普及センター ／ 技術士＝日本技術士会 ／ RCCM＝建設コンサルタンツ協会 ／ 測量士・測量士補＝国土地理院 ／ 不動産鑑定士・管理業務主任者・旅行業務取扱管理者＝国土交通省・観光庁および各指定試験機関（マンション管理業協会、日本旅行業協会・全国旅行業協会）／ 賃貸不動産経営管理士＝賃貸不動産経営管理士協議会 ／ ビル経営管理士＝日本ビルヂング経営センター ／ 建築物環境衛生管理技術者＝日本建築衛生管理教育センター ／ 消防設備士＝消防試験研究センター（大阪府支部の日程を一例として掲載）／ エネルギー管理士＝省エネルギーセンター ／ 運行管理者＝運行管理者試験センター ／ 自動車整備士＝日本自動車整備振興会連合会 ／ 海技士＝国土交通省・各地方運輸局 ／ 証券アナリスト＝日本証券アナリスト協会 ／ 中小企業診断士＝日本中小企業診断士協会連合会 ／ 社会保険労務士＝全国社会保険労務士会連合会 ／ FP技能検定＝日本FP協会・金融財政事情研究会 ／ 販売士＝日本商工会議所 ／ 応用情報技術者＝IPA ／ ホテルビジネス実務検定＝日本ホテル教育センター ／ ソムリエ＝日本ソムリエ協会 ／ 色彩検定＝色彩検定協会 ／ 管理栄養士＝厚生労働省 ／ 技能検定＝中央職業能力開発協会（いずれも2026年11月11日確認）。</li>
           <li>「希望からおすすめ企業を探す」の結果は、このページに掲載したデータ（事業内容・職種タグ・資格・年間休日・説明会情報）だけを使ってブラウザ内で照合したもので、外部への送信や保存は行いません。</li>
+          <li>「就活サイトで探す・申し込む」のリンク先：<a href="http://job.mynavi.jp/" target="_blank" rel="noopener">マイナビ</a>／<a href="https://job.rikunabi.com/" target="_blank" rel="noopener">リクナビ</a>／<a href="https://job.career-tasu.jp/" target="_blank" rel="noopener">キャリタス就活</a>／<a href="https://offerbox.jp/" target="_blank" rel="noopener">OfferBox</a>／<a href="https://www.onecareer.jp/" target="_blank" rel="noopener">ONE CAREER</a>の各公式サイト（2026年11月12日確認）。各社の行の「就活サイトで探す（マイナビ）」は、その会社の会社名でマイナビ2027の企業検索を開くリンクです。</li>
           <li>サムネイル画像：各社の公式ホームページ（会社HPがない会社は運営施設の公式サイト）のトップ画像を、外部参照で表示しています（2026年11月11日確認）。会社ごとの画像の元URLと取得元ページは、下の「サムネイル画像の出典一覧」に全社分を記載しています。画像が取得できなかった会社は、分野名のプレースホルダーを表示しています。</li>
           <li>このページ自体に組み込んだ素材は上記の公式公開情報（テキスト情報）のみで、画像ファイルは同梱していません（サムネイルは各社公式サイトへの外部参照です）。</li>
         </ul>
@@ -1822,7 +1866,7 @@ try {
           + '<td class="c-qual">'+qual+'</td>'
           + '<td class="c-ev">'+evHtml+'</td>'
           + '<td class="c-hol">'+hol+'</td>'
-          + '<td class="c-hp">'+hp+'</td></tr>';
+          + '<td class="c-hp">'+hp+'<br><a class="job-link" href="https://job.mynavi.jp/27/pc/corpinfo/searchCorpListByGenCond/index/?cond=FW:'+encodeURIComponent(c.n)+'/func=PCTopQuickSearch/FWTGT:1" target="_blank" rel="noopener">就活サイトで探す（マイナビ）</a></td></tr>';
       }).join("");
       document.getElementById("empty").hidden = list.length>0;
       document.getElementById("count").innerHTML = "<b>"+list.length+"</b> 社を表示中（全"+C.length+"社）";
