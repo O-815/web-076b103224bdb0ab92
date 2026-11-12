@@ -20,17 +20,56 @@
   #aikotobaGate .gate-note { font-size: .78rem; color: #7e8fa0; margin-top: .9rem; }
 </style>
 <script>
-  function gateUnlocked() {
-    try { if (localStorage.getItem("aikotoba-ok") === "1") { return true; } } catch (e) {}
+window.__gate = (function () {
+  var KEY = "aikotoba-ok";
+  var EXPECTED = String.fromCharCode(23601,32887,27963,21205,49,56,49,56);
+  function readUnlocked() {
+    try { if (localStorage.getItem(KEY) === "1") { return true; } } catch (e) {}
     try { return /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || ""); } catch (e) { return false; }
   }
-  try {
-    if (!gateUnlocked()) {
-      document.documentElement.classList.add("gate-locked");
+  function saveUnlocked() {
+    try { localStorage.setItem(KEY, "1"); } catch (e) {}
+    try { document.cookie = KEY + "=1; max-age=2592000; path=/; SameSite=Lax"; } catch (e) {}
+  }
+  function normalize(s) {
+    return s.replace(/[\uFF01-\uFF5E]/g, function (ch) {
+      return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
+    }).replace(/\u3000/g, " ").trim();
+  }
+  function openGate() {
+    var input = document.getElementById("gateInput");
+    var gate = document.getElementById("aikotobaGate");
+    var error = document.getElementById("gateError");
+    if (!input || !gate) { return false; }
+    if (normalize(input.value) === EXPECTED) {
+      saveUnlocked();
+      document.documentElement.classList.remove("gate-locked");
+      gate.remove();
+      return true;
     }
-  } catch (e) {
+    if (error) { error.textContent = "合言葉が違います。もう一度入力してください。"; }
+    return false;
+  }
+  function toggleGate() {
+    var input = document.getElementById("gateInput");
+    var btn = document.getElementById("gateToggle");
+    if (!input || !btn) { return; }
+    if (input.style.webkitTextSecurity === "none") {
+      input.style.webkitTextSecurity = "disc"; btn.textContent = "表示";
+    } else {
+      input.style.webkitTextSecurity = "none"; btn.textContent = "隠す";
+    }
+    input.focus();
+  }
+  return { unlocked: readUnlocked, open: openGate, toggle: toggleGate };
+})();
+try {
+  if (!window.__gate.unlocked()) {
     document.documentElement.classList.add("gate-locked");
   }
+} catch (e) {
+  document.documentElement.classList.add("gate-locked");
+}
 </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -1925,59 +1964,34 @@
     <p>このページは、合言葉を知っている人だけに共有しているページです。合言葉を入力すると内容が表示されます。</p>
     <div class="gate-row">
       <input id="gateInput" type="text" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="合言葉" aria-label="合言葉" />
-      <button id="gateToggle" type="button">表示</button>
+      <button id="gateToggle" type="button" onclick="window.__gate && window.__gate.toggle()">表示</button>
     </div>
-    <button id="gateSubmit" type="button">開く</button>
+    <button id="gateSubmit" type="button" onclick="window.__gate && window.__gate.open()">開く</button>
     <div id="gateError" role="alert"></div>
-    <p class="gate-note">※この合言葉は簡易的な表示ロックで、強いセキュリティではありません。</p>
+    <p class="gate-note">※この合言葉は簡易的な表示ロックで、強いセキュリティではありません。（v20261112-4）</p>
   </div>
 </div>
 <script>
 (function () {
-  var KEY = "aikotoba-ok";
-  var unlocked = false;
-  try { unlocked = localStorage.getItem(KEY) === "1"; } catch (e) {}
-  if (!unlocked) { try { unlocked = /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || ""); } catch (e) {} }
-  if (unlocked) { document.documentElement.classList.remove("gate-locked"); return; }
+  try {
+    if (window.__gate && window.__gate.unlocked()) {
+      document.documentElement.classList.remove("gate-locked");
+      return;
+    }
+  } catch (e) {}
   var gate = document.getElementById("aikotobaGate");
-  if (!gate) return;
+  if (!gate) { return; }
   gate.hidden = false;
   var input = document.getElementById("gateInput");
-  var toggle = document.getElementById("gateToggle");
-  var submit = document.getElementById("gateSubmit");
-  var error = document.getElementById("gateError");
-  var EXPECTED = String.fromCharCode(23601,32887,27963,21205,49,56,49,56);
+  if (!input) { return; }
   var composing = false;
   input.addEventListener("compositionstart", function () { composing = true; });
   input.addEventListener("compositionend", function () { composing = false; });
-  toggle.addEventListener("click", function () {
-    if (input.style.webkitTextSecurity === "none") {
-      input.style.webkitTextSecurity = "disc"; toggle.textContent = "表示";
-    } else {
-      input.style.webkitTextSecurity = "none"; toggle.textContent = "隠す";
-    }
-    input.focus();
-  });
-  function normalize(s) {
-    return s.replace(/[\uFF01-\uFF5E]/g, function (ch) {
-      return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
-    }).replace(/\u3000/g, " ").trim();
-  }
-  function tryOpen() {
-    if (normalize(input.value) === EXPECTED) {
-      try { localStorage.setItem(KEY, "1"); } catch (e) {}
-      try { document.cookie = KEY + "=1; max-age=2592000; path=/; SameSite=Lax"; } catch (e) {}
-      document.documentElement.classList.remove("gate-locked");
-      gate.remove();
-    } else {
-      error.textContent = "合言葉が違います。もう一度入力してください。";
-    }
-  }
-  submit.addEventListener("click", tryOpen);
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       if (composing || e.isComposing || e.keyCode === 229) { return; }
-      e.preventDefault(); tryOpen();
+      e.preventDefault();
+      if (window.__gate) { window.__gate.open(); }
     }
   });
   input.focus();
