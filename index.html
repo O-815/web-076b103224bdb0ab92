@@ -21,7 +21,7 @@
 </style>
 <script>
   try {
-    if (sessionStorage.getItem("aikotoba-ok") !== "1") {
+    if (localStorage.getItem("aikotoba-ok") !== "1") {
       document.documentElement.classList.add("gate-locked");
     }
   } catch (e) {
@@ -1932,7 +1932,7 @@
 (function () {
   var KEY = "aikotoba-ok";
   var unlocked = false;
-  try { unlocked = sessionStorage.getItem(KEY) === "1"; } catch (e) {}
+  try { unlocked = localStorage.getItem(KEY) === "1"; } catch (e) {}
   if (unlocked) { document.documentElement.classList.remove("gate-locked"); return; }
   var gate = document.getElementById("aikotobaGate");
   if (!gate) return;
@@ -1960,7 +1960,7 @@
   }
   function tryOpen() {
     if (normalize(input.value) === EXPECTED) {
-      try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+      try { localStorage.setItem(KEY, "1"); } catch (e) {}
       document.documentElement.classList.remove("gate-locked");
       gate.remove();
     } else {
