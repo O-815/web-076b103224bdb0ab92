@@ -20,8 +20,12 @@
   #aikotobaGate .gate-note { font-size: .78rem; color: #7e8fa0; margin-top: .9rem; }
 </style>
 <script>
+  function gateUnlocked() {
+    try { if (localStorage.getItem("aikotoba-ok") === "1") { return true; } } catch (e) {}
+    return /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || "");
+  }
   try {
-    if (localStorage.getItem("aikotoba-ok") !== "1") {
+    if (!gateUnlocked()) {
       document.documentElement.classList.add("gate-locked");
     }
   } catch (e) {
@@ -1933,6 +1937,7 @@
   var KEY = "aikotoba-ok";
   var unlocked = false;
   try { unlocked = localStorage.getItem(KEY) === "1"; } catch (e) {}
+  if (!unlocked) { unlocked = /(?:^|; )aikotoba-ok=1(?:;|$)/.test(document.cookie || ""); }
   if (unlocked) { document.documentElement.classList.remove("gate-locked"); return; }
   var gate = document.getElementById("aikotobaGate");
   if (!gate) return;
@@ -1961,6 +1966,7 @@
   function tryOpen() {
     if (normalize(input.value) === EXPECTED) {
       try { localStorage.setItem(KEY, "1"); } catch (e) {}
+      try { document.cookie = KEY + "=1; max-age=2592000; path=/; SameSite=Lax"; } catch (e) {}
       document.documentElement.classList.remove("gate-locked");
       gate.remove();
     } else {
